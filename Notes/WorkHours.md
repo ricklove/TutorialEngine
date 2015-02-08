@@ -7,7 +7,7 @@
 - Create the project
 - Create the sample lesson
 
-## Hour 2
+## Hour 2-3
 
 ### 5:21-6:58
 
