@@ -27,8 +27,8 @@ namespace TutorialEngine
 
             // Get the header metadata
             var headerLines = header.GetLines();
-            //var title = headerLines.GetFirstLineValue("% TITLE =").Trim();
-            //document.Children.Add(new LessonTitle(0, 0, title));
+            var title = headerLines.GetFirstLineValue("% TITLE =").Trim();
+            document.Children.Add(new LessonTitle(title));
 
             //// Process the steps
 

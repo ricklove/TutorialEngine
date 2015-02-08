@@ -14,6 +14,11 @@ namespace TutorialEngine
 
         public string Text { get { return Source.Substring(Index, Length); } }
 
+        public StringWithIndex Substring(int index, int? length = null)
+        {
+            return new StringWithIndex(Source, Index + index, length ?? (Length - index));
+        }
+
         public StringWithIndex(string source, int index, int length)
         {
             Source = source;
@@ -29,9 +34,9 @@ namespace TutorialEngine
 
     public static class ParseHelper
     {
-        public static List<StringWithIndex> GetLines(this StringWithIndex text)
+        public static StringWithIndex Trim(this StringWithIndex text, params char[] chars)
         {
-            return Split(text, "\r\n").Where(l => !string.IsNullOrWhiteSpace(l.Text)).Select(l => l.TrimEnd()).ToList();
+            return text.TrimStart(chars).TrimEnd(chars);
         }
 
         public static StringWithIndex TrimEnd(this StringWithIndex text, params char[] chars)
@@ -39,7 +44,7 @@ namespace TutorialEngine
             var trimmed = text.Text.TrimEnd(chars);
             var lengthDiff = text.Length - trimmed.Length;
 
-            return new StringWithIndex(text.Source, text.Index, text.Length - lengthDiff);
+            return text.Substring(0, text.Length - lengthDiff);
         }
 
         public static StringWithIndex TrimStart(this StringWithIndex text, params char[] chars)
@@ -47,21 +52,25 @@ namespace TutorialEngine
             var trimmed = text.Text.TrimStart(chars);
             var lengthDiff = text.Length - trimmed.Length;
 
-            return new StringWithIndex(text.Source, text.Index + lengthDiff, text.Length - lengthDiff);
+            return text.Substring(lengthDiff, text.Length - lengthDiff);
         }
 
         public static StringWithIndex TrimStart(this StringWithIndex text, params string[] starts)
         {
             var trimmed = text.Text;
 
-            foreach (var s in starts)
+            foreach (var s in starts.OrderByDescending(s => s.Length))
             {
-                trimmed = trimmed.ReplaceStart(s, "");
+                if (trimmed.StartsWith(s))
+                {
+                    trimmed = trimmed.ReplaceStart(s, "");
+                    break;
+                }
             }
 
             var lengthDiff = text.Length - trimmed.Length;
 
-            return new StringWithIndex(text.Source, text.Index + lengthDiff, text.Length - lengthDiff);
+            return text.Substring(lengthDiff, text.Length - lengthDiff);
         }
 
         public static List<StringWithIndex> Split(this StringWithIndex text, params string[] separators)
@@ -107,16 +116,36 @@ namespace TutorialEngine
             return indices.Min();
         }
 
-
+        public static List<StringWithIndex> GetLines(this StringWithIndex text)
+        {
+            return Split(text, "\r\n").Where(l => !string.IsNullOrWhiteSpace(l.Text)).Select(l => l.TrimEnd()).ToList();
+        }
 
         public static string[] GetLines(this string text)
         {
             return text.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.TrimEnd()).ToArray();
         }
 
+        public static StringWithIndex GetFirstLineValue(this IEnumerable<StringWithIndex> lines, string lineStartMatch)
+        {
+            return lines.Where(l => l.Text.StartsWith(lineStartMatch)).Select(l => l.GetValueAfter(lineStartMatch)).First();
+        }
+
         public static string GetFirstLineValue(this IEnumerable<string> lines, string lineStartMatch)
         {
             return lines.Where(l => l.StartsWith(lineStartMatch)).Select(l => l.GetValueAfter(lineStartMatch)).First();
+        }
+
+        public static StringWithIndex GetValueAfter(this StringWithIndex text, string lineStartMatch)
+        {
+            if (!text.Text.StartsWith(lineStartMatch))
+            {
+                return null;
+            }
+            else
+            {
+                return text.ReplaceStart(lineStartMatch, "");
+            }
         }
 
         public static string GetValueAfter(this string text, string lineStartMatch)
@@ -128,6 +157,18 @@ namespace TutorialEngine
             else
             {
                 return text.ReplaceStart(lineStartMatch, "");
+            }
+        }
+
+        public static StringWithIndex ReplaceStart(this StringWithIndex text, string match, string replacement)
+        {
+            if (text.Text.StartsWith(match))
+            {
+                return text.Substring(match.Length);
+            }
+            else
+            {
+                return text;
             }
         }
 

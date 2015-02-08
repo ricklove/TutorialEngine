@@ -14,9 +14,13 @@
 - Parse the lesson
 - Create StringWithIndex
 
+### 6:59-7:09
+
+- Reintroduce the implemented code
+
 # Tasks
 
-- Create sample tutorial
+- Add TDD
 - Create Parser
 - Create Runner
 
