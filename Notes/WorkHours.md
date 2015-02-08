@@ -7,7 +7,12 @@
 - Create the project
 - Create the sample lesson
 
-### 5:21-
+## Hour 2
+
+### 5:21-6:58
+
+- Parse the lesson
+- Create StringWithIndex
 
 # Tasks
 
