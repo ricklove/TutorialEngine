@@ -10,7 +10,7 @@ namespace TutorialEngine
     {
         public static void Main(string[] args)
         {
-            var document = System.IO.File.ReadAllText(@"D:\UserData\Projects\Products\Frameworks\TutorialEngine\TutorialEngine\Lessons\Lesson.md");
+            var document = Lessons.LessonLoader.LoadSampleLesson();
 
             var parser = new LessonParser();
             var lesson = parser.ParseLesson(document);
@@ -18,5 +18,6 @@ namespace TutorialEngine
             var lessonStr = lesson.ToString();
 
         }
+
     }
 }

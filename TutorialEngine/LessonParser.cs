@@ -30,12 +30,14 @@ namespace TutorialEngine
             var title = headerLines.GetFirstLineValue("% TITLE =").Trim();
             document.Children.Add(new LessonTitle(title));
 
-            //// Process the steps
+            // Process the steps
+
+
 
 
             //// TODO: LOW PRIORITY Decorate the Nodes with their comments
 
-            throw new NotImplementedException();
+            return document;
         }
 
 

@@ -44,12 +44,13 @@
   <ItemGroup>
     <Compile Include="LessonParser.cs" />
     <Compile Include="LessonSyntaxTree.cs" />
+    <Compile Include="Lessons\LessonLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringWithIndex.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Lessons\Lesson.md" />
+    <EmbeddedResource Include="Lessons\Sample.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -18,6 +18,17 @@
 
 - Reintroduce the implemented code
 
+## Hour 4
+
+### 5:15-5:45
+
+- Add TDD
+
+### 5:46-
+
+- Continue implementing parser
+
+
 # Tasks
 
 - Add TDD

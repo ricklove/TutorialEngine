@@ -49,6 +49,26 @@ namespace TutorialEngine
     public class LessonDocument : LessonBlockBase
     {
         public LessonDocument(StringWithIndex content) : base(content) { }
+        public LessonTitle Title
+        {
+            get
+            {
+                return Children.Where(c => c is LessonTitle).Cast<LessonTitle>().FirstOrDefault();
+            }
+        }
+
+        public List<LessonStep> Steps
+        {
+            get
+            {
+                return Children.Where(c => c is LessonStep).Cast<LessonStep>().ToList();
+            }
+        }
+    }
+
+    public class LessonStep : LessonBlockBase
+    {
+        public LessonStep(StringWithIndex content) : base(content) { }
     }
 
     public abstract class LessonSpan : LessonNode
