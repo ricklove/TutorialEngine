@@ -65,9 +65,18 @@
 - Parse TEST
 - Start Parse EXPLANATION
 
+### 15:14-15:20
+
+- Add test: EXPLANATION needs TEST section
+- Parse explanation
+
+### 15:21-15:47
+
+- Finish parsing
+
 # Tasks
 
-- Steps is not processed in order!
+
 
 ## Implement Parser
 

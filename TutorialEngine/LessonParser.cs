@@ -250,16 +250,35 @@ namespace TutorialEngine
             var titlePart = parts[0];
             explanation.Children.Add(new LessonBlankTitlePlaceholder(titlePart, "## EXPLANATION", "\r\n"));
 
-            // TODO: Parse explanation
+            // Parse explanation
+            // Divide the parts
+            var codeExplanationTexts = parts[1].SplitWithoutModification("\n*");
+            var codeExplanations = codeExplanationTexts.Where(t => !string.IsNullOrWhiteSpace(t.Text)).Select(t => ParseCodeExplanation(t));
 
-            //var paragraphs = GetParagraphs(parts[1]);
-
-            //// Remove blank paragraphs
-            //paragraphs = paragraphs.Where(p => p.Code != null);
-
-            //explanation.Children.AddRange(paragraphs);
+            explanation.Children.AddRange(codeExplanations);
 
             return explanation;
+        }
+
+        private LessonCodeExplanation ParseCodeExplanation(StringWithIndex text)
+        {
+            text = text.Trim();
+
+            var codeExp = new LessonCodeExplanation(text);
+
+            var parts = text.SplitAfterFirstLine();
+
+            // Parse the title
+            var titlePart = parts[0];
+            codeExp.Children.Add(new LessonCodeExplanationQuote(titlePart));
+
+            // Parse the phrases
+            var phraseTexts = parts[1].SplitWithoutModification("-");
+            var phrases = phraseTexts.Select(t => new LessonPhrase(t.Trim()));
+
+            codeExp.Children.AddRange(phrases);
+
+            return codeExp;
         }
 
         private LessonFile ParseFile(StringWithIndex text)

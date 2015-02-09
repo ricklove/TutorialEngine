@@ -163,7 +163,6 @@ namespace TutorialEngine.Tests
         public void FileSectionIsDeclaredBeforeAnyTestSections()
         {
             var result = ParseSampleLesson();
-            LessonFile fileSection = null;
 
             foreach (var step in result.Document.Steps)
             {
@@ -229,7 +228,7 @@ namespace TutorialEngine.Tests
                 foreach (var line in lines)
                 {
                     Assert.IsTrue(
-                        line == span.StartMarker
+                        line.TrimStart() == span.StartMarker
                         || line.StartsWith("//")
                         || string.IsNullOrWhiteSpace(line),
                         "This line was not parsed: " + line
@@ -385,6 +384,34 @@ namespace TutorialEngine.Tests
 
             AssertEqualWithDiff(lesson, resultStr, result);
             Assert.AreEqual(lesson, resultStr);
+        }
+
+        [TestMethod]
+        public void ExplanationSectionMustHaveATestSection()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                if (step.Explanation != null && step.Test == null)
+                {
+                    Assert.Fail("An EXPLANATION section needs a TEST section");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ExplanationHasExplanationParts()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                if (step.Explanation != null)
+                {
+                   // test the explanation parts
+                }
+            }
         }
 
         #endregion

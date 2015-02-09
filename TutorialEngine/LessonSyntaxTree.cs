@@ -377,19 +377,6 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonExplanation : LessonBlockBase
-    {
-        public LessonExplanation(StringWithIndex content) : base(content) { }
-
-        public List<LessonParagraph> Paragraphs
-        {
-            get
-            {
-                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
-            }
-        }
-    }
-
     public class LessonParagraph : LessonBlockBase
     {
         public LessonParagraph(StringWithIndex content) : base(content) { }
@@ -428,5 +415,44 @@ namespace TutorialEngine
     }
 
 
+    public class LessonExplanation : LessonBlockBase
+    {
+        public LessonExplanation(StringWithIndex content) : base(content) { }
+
+        public List<LessonParagraph> Paragraphs
+        {
+            get
+            {
+                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
+            }
+        }
+    }
+
+
+    public class LessonCodeExplanation : LessonBlockBase
+    {
+        public LessonCodeExplanation(StringWithIndex content) : base(content) { }
+
+        public LessonCodeExplanationQuote CodeQuote
+        {
+            get
+            {
+                return Children.Where(c => c is LessonCodeExplanationQuote).Cast<LessonCodeExplanationQuote>().FirstOrDefault();
+            }
+        }
+
+        public List<LessonPhrase> Phrases
+        {
+            get
+            {
+                return Children.Where(c => c is LessonPhrase).Cast<LessonPhrase>().ToList();
+            }
+        }
+    }
+
+    public class LessonCodeExplanationQuote : LessonSpan
+    {
+        public LessonCodeExplanationQuote(StringWithIndex content) : base(content, "* ", "\r\n") { }
+    }
 
 }
