@@ -42,21 +42,16 @@
 
 - Test that all LessonSpans will reconstruct document
 
-### 11:32-12:24
+### 11:32-12:26
 
 - Reconstruct document with skipped text
 
 # Tasks
 
+
 ## Implement Parser
 
-- Some blocks are getting extra data that actually belongs to the next block span, but it is included in their content...
-- Content in spans?
-
-- Test that all LessonSpans will reconstruct document
-- Add IgnoredPreText (in front of each LessonSpan)
-
-- Test that all IgnoredPreText contains only whitespace or comment lines
+- Test that all SkippedPreText contains only whitespace or comment lines
 
 ## Implement Unity Runner
 
