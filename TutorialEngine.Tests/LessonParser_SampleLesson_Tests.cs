@@ -26,7 +26,7 @@ namespace TutorialEngine.Tests
         }
 
         [TestMethod]
-        public void HasTitle()
+        public void DocumentHasTitle()
         {
             var result = ParseSampleLesson();
             Assert.IsNotNull(result.Document.Title);
@@ -34,7 +34,7 @@ namespace TutorialEngine.Tests
         }
 
         [TestMethod]
-        public void HasSteps()
+        public void DocumentHasSteps()
         {
             var result = ParseSampleLesson();
             Assert.IsNotNull(result.Document.Steps);
@@ -140,6 +140,92 @@ namespace TutorialEngine.Tests
         }
 
         [TestMethod]
+        public void AtLeastOneFileSectionExists()
+        {
+            var result = ParseSampleLesson();
+            LessonFile fileSection = null;
+
+            foreach (var step in result.Document.Steps)
+            {
+                foreach (var c in step.Children)
+                {
+                    if (c is LessonFile)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            Assert.Fail("No FILE section exists");
+        }
+
+        [TestMethod]
+        public void FileSectionIsDeclaredBeforeAnyTestSections()
+        {
+            var result = ParseSampleLesson();
+            LessonFile fileSection = null;
+
+            foreach (var step in result.Document.Steps)
+            {
+                foreach (var c in step.Children)
+                {
+                    if (c is LessonFile)
+                    {
+                        return;
+                    }
+
+                    if (c is LessonTest)
+                    {
+                        Assert.Fail("A TEST section was found before a FILE section");
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void FileParagraphsHaveOnlyCode()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                var goal = step.Goal;
+
+                foreach (var paragraph in goal.Paragraphs)
+                {
+                    Assert.IsTrue(paragraph.Code != null);
+                }
+            }
+        }
+
+
+        #region General Document Integrity Tests
+
+        [TestMethod]
+        public void SkippedTextOnlyContainInsignificantText()
+        {
+            var result = ParseSampleLesson();
+            var spans = result.FlattenSpans();
+
+            foreach (var span in spans)
+            {
+                var skippedText = span.SkippedPreText.Text;
+                var lines = skippedText.GetLines();
+
+                foreach (var line in lines)
+                {
+                    Assert.IsTrue(
+                        line == span.StartMarker
+                        || line.StartsWith("//")
+                        || string.IsNullOrWhiteSpace(line),
+                        "This line was not parsed: " + line
+                        );
+                }
+
+            }
+        }
+
+        [TestMethod]
         public void NoSpansOverlap()
         {
             var result = ParseSampleLesson();
@@ -188,7 +274,7 @@ namespace TutorialEngine.Tests
             {
                 Assert.Fail("ContentBetweenFirstAndLastSpan is beyond the bounds of the end of the Content");
             }
-            
+
         }
 
         [TestMethod]
@@ -287,6 +373,7 @@ namespace TutorialEngine.Tests
             Assert.AreEqual(lesson, resultStr);
         }
 
+        #endregion
     }
 
 }

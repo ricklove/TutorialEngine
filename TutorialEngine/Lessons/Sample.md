@@ -19,7 +19,7 @@
 
 
 // The File section will select the file and method of concern
-// The File section is optional
+// A FILE section is neccessary before any TEST sections
 // This will set the content for that method in the file
 // The rest of the files in the project will be based on the default tutorial template
 // Code should be indented one tab (and a blank space should be before it)

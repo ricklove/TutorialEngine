@@ -45,9 +45,32 @@ namespace TutorialEngine
             return text.TrimStart(chars).TrimEnd(chars);
         }
 
+        public static StringWithIndex TrimEnd(this StringWithIndex text)
+        {
+            return TrimEnd(text, new char[0]);
+        }
+
         public static StringWithIndex TrimEnd(this StringWithIndex text, params char[] chars)
         {
             var trimmed = text.Text.TrimEnd(chars);
+            var lengthDiff = text.Length - trimmed.Length;
+
+            return text.Substring(0, text.Length - lengthDiff);
+        }
+
+        public static StringWithIndex TrimEnd(this StringWithIndex text, params string[] starts)
+        {
+            var trimmed = text.Text;
+
+            foreach (var s in starts.OrderByDescending(s => s.Length))
+            {
+                if (trimmed.EndsWith(s))
+                {
+                    trimmed = trimmed.ReplaceEnd(s, "");
+                    break;
+                }
+            }
+
             var lengthDiff = text.Length - trimmed.Length;
 
             return text.Substring(0, text.Length - lengthDiff);
@@ -166,12 +189,12 @@ namespace TutorialEngine
 
         public static List<StringWithIndex> GetLines(this StringWithIndex text)
         {
-            return Split(text, "\r\n").Where(l => !string.IsNullOrWhiteSpace(l.Text)).Select(l => l.TrimEnd()).ToList();
+            return Split(text, "\n").Where(l => !string.IsNullOrWhiteSpace(l.Text)).Select(l => l.TrimEnd('\r')).ToList();
         }
 
         public static string[] GetLines(this string text)
         {
-            return text.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.TrimEnd()).ToArray();
+            return text.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.TrimEnd('\r')).ToArray();
         }
 
         public static StringWithIndex GetFirstLineValue(this IEnumerable<StringWithIndex> lines, string lineStartMatch)
@@ -225,6 +248,31 @@ namespace TutorialEngine
             if (text.StartsWith(match))
             {
                 return text.Substring(match.Length);
+            }
+            else
+            {
+                return text;
+            }
+        }
+
+
+        public static StringWithIndex ReplaceEnd(this StringWithIndex text, string match, string replacement)
+        {
+            if (text.Text.EndsWith(match))
+            {
+                return text.Substring(0, text.Text.Length - match.Length);
+            }
+            else
+            {
+                return text;
+            }
+        }
+
+        public static string ReplaceEnd(this string text, string match, string replacement)
+        {
+            if (text.EndsWith(match))
+            {
+                return text.Substring(0, text.Length - match.Length);
             }
             else
             {

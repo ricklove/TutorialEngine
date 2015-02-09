@@ -42,16 +42,29 @@
 
 - Test that all LessonSpans will reconstruct document
 
+## Hour 7
+
 ### 11:32-12:26
 
 - Reconstruct document with skipped text
+
+## Hour 8
+
+### 13:08-13:41
+
+- Test that all SkippedPreText contains only whitespace or comment lines
+
+### 13:42-14:18
+
+- Parse File 
+
 
 # Tasks
 
 
 ## Implement Parser
 
-- Test that all SkippedPreText contains only whitespace or comment lines
+- Test that all children are accessible through specific properties
 
 ## Implement Unity Runner
 

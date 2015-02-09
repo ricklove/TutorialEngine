@@ -24,6 +24,12 @@ namespace TutorialEngine
     public abstract class LessonNode
     {
         public StringWithIndex Content { get; private set; }
+        public LessonBlockBase Parent { get; internal set; }
+
+        internal void OverrideContent(StringWithIndex content)
+        {
+            Content = content;
+        }
 
         public LessonNode(StringWithIndex content)
         {
@@ -40,13 +46,28 @@ namespace TutorialEngine
     public abstract class LessonSpan : LessonNode
     {
         public StringWithIndex SkippedPreText { get; internal set; }
-        public LessonSpan(StringWithIndex content) : base(content) { }
+        public string StartMarker { get; protected set; }
+        public string EndMarker { get; protected set; }
+
+        public LessonSpan(StringWithIndex content, string startMarker, string endMarker)
+            : base(content)
+        {
+            StartMarker = startMarker;
+            EndMarker = endMarker;
+            OverrideContent(content.TrimStart(startMarker).TrimEnd(endMarker));
+        }
+
+        public override string ToString()
+        {
+            return StartMarker + Content.Text + EndMarker;
+        }
+
     }
 
     public class LessonEnd : LessonSpan
     {
         public LessonEnd(StringWithIndex content)
-            : base(content)
+            : base(content, "", "")
         {
             if (content.Length != 0)
             {
@@ -57,12 +78,7 @@ namespace TutorialEngine
 
     public class LessonComment : LessonSpan
     {
-        public LessonComment(StringWithIndex content) : base(content) { }
-
-        public override string ToString()
-        {
-            return "// " + Content + "\r\n";
-        }
+        public LessonComment(StringWithIndex content) : base(content, "// ", "\r\n") { }
     }
 
     public abstract class LessonBlockBase : LessonNode
@@ -194,11 +210,11 @@ namespace TutorialEngine
     public class LessonDocument : LessonBlockBase
     {
         public LessonDocument(StringWithIndex content) : base(content) { }
-        public LessonTitle Title
+        public LessonDocumentTitle Title
         {
             get
             {
-                return Children.Where(c => c is LessonTitle).Cast<LessonTitle>().FirstOrDefault();
+                return Children.Where(c => c is LessonDocumentTitle).Cast<LessonDocumentTitle>().FirstOrDefault();
             }
         }
 
@@ -213,25 +229,30 @@ namespace TutorialEngine
 
     }
 
-    public class LessonTitle : LessonSpan
+    public class LessonDocumentTitle : LessonSpan
     {
-        public LessonTitle(StringWithIndex content) : base(content) { }
+        public LessonDocumentTitle(StringWithIndex content) : base(content, "% TITLE = ", "\r\n") { }
+    }
 
-        public override string ToString()
-        {
-            return "% TITLE = " + Content + "\r\n";
-        }
+    public class LessonStepTitle : LessonSpan
+    {
+        public LessonStepTitle(StringWithIndex content) : base(content, "# STEP = ", "\r\n") { }
+    }
+
+    public class LessonFileMethodReference : LessonSpan
+    {
+        public LessonFileMethodReference(StringWithIndex content) : base(content, "# FILE = ", "\r\n") { }
     }
 
     public class LessonStep : LessonBlockBase
     {
         public LessonStep(StringWithIndex content) : base(content) { }
 
-        public LessonTitle Title
+        public LessonStepTitle Title
         {
             get
             {
-                return Children.Where(c => c is LessonTitle).Cast<LessonTitle>().FirstOrDefault();
+                return Children.Where(c => c is LessonStepTitle).Cast<LessonStepTitle>().FirstOrDefault();
             }
         }
 
@@ -278,6 +299,32 @@ namespace TutorialEngine
         }
     }
 
+    public class LessonFile : LessonBlockBase
+    {
+        public LessonFile(StringWithIndex content) : base(content) { }
+
+        public List<LessonParagraph> Paragraphs
+        {
+            get
+            {
+                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
+            }
+        }
+    }
+
+    public class LessonTest : LessonBlockBase
+    {
+        public LessonTest(StringWithIndex content) : base(content) { }
+
+        public List<LessonParagraph> Paragraphs
+        {
+            get
+            {
+                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
+            }
+        }
+    }
+
     public class LessonParagraph : LessonBlockBase
     {
         public LessonParagraph(StringWithIndex content) : base(content) { }
@@ -301,23 +348,18 @@ namespace TutorialEngine
 
     public class LessonPhrase : LessonSpan
     {
-        public LessonPhrase(StringWithIndex content) : base(content) { }
-
-        public override string ToString()
-        {
-            return "- " + Content + "\r\n";
-        }
+        public LessonPhrase(StringWithIndex content) : base(content, "- ", "\r\n") { }
     }
 
     public class LessonCode : LessonSpan
     {
-        public LessonCode(StringWithIndex content) : base(content) { }
+        public LessonCode(StringWithIndex content) : base(content, "", "") { }
 
-        public override string ToString()
-        {
-            var lines = Content.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None).Select(l => "\t" + l + "\r\n");
-            return lines.Aggregate(new StringBuilder(), (sb, l) => sb.Append(l)).ToString();
-        }
+        //public override string ToString()
+        //{
+        //    var lines = Content.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None).Select(l => StartMarker + l + "\r\n");
+        //    return lines.Aggregate(new StringBuilder(), (sb, l) => sb.Append(l)).ToString();
+        //}
     }
 
 
