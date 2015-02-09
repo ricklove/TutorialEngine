@@ -36,10 +36,27 @@
 - Parse Instructions
 - Parse Goal
 
+## Hour 6
+
+### 10:20-11:11
+
+- Test that all LessonSpans will reconstruct document
+
+### 11:32-12:24
+
+- Reconstruct document with skipped text
 
 # Tasks
 
-- Add TDD
-- Create Parser
-- Create Runner
+## Implement Parser
+
+- Some blocks are getting extra data that actually belongs to the next block span, but it is included in their content...
+- Content in spans?
+
+- Test that all LessonSpans will reconstruct document
+- Add IgnoredPreText (in front of each LessonSpan)
+
+- Test that all IgnoredPreText contains only whitespace or comment lines
+
+## Implement Unity Runner
 

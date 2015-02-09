@@ -139,17 +139,153 @@ namespace TutorialEngine.Tests
             }
         }
 
+        [TestMethod]
+        public void NoSpansOverlap()
+        {
+            var result = ParseSampleLesson();
+            var spans = result.FlattenSpans();
+            LessonSpan lastSpan = null;
 
-        //[TestMethod]
-        //public void CanParseAndRebuildDocument()
-        //{
-        //    var result = ParseSampleLesson();
-        //    var resultStr = result.ToString();
+            foreach (var span in spans)
+            {
+                if (lastSpan != null)
+                {
+                    var iAfterLast = lastSpan.Content.GetIndexAfter();
 
-        //    var lesson = Lessons.LessonLoader.LoadSampleLesson();
+                    if (iAfterLast > span.Content.Index)
+                    {
+                        Assert.Fail("Spans overlap");
+                    }
+                }
 
-        //    Assert.AreEqual(lesson, resultStr);
-        //}
+                lastSpan = span;
+            }
+        }
+
+        [TestMethod]
+        public void ContentBetweenFirstAndLastSpanIsCorrectForEachBlock()
+        {
+            var result = ParseSampleLesson();
+            var block = result.Document;
+
+            ContentBetweenFirstAndLastSpanIsCorrectForEachBlock_Inner(block);
+        }
+
+        private void ContentBetweenFirstAndLastSpanIsCorrectForEachBlock_Inner(LessonBlockBase block)
+        {
+            foreach (var c in block.Children)
+            {
+                if (c is LessonBlockBase)
+                {
+                    ContentBetweenFirstAndLastSpanIsCorrectForEachBlock_Inner(c as LessonBlockBase);
+                }
+            }
+
+            var parsedContent = block.Content;
+            var contentInSpans = block.ContentBetweenFirstAndLastSpan;
+
+            if (contentInSpans.GetIndexAfter() > parsedContent.GetIndexAfter())
+            {
+                Assert.Fail("ContentBetweenFirstAndLastSpan is beyond the bounds of the end of the Content");
+            }
+            
+        }
+
+        [TestMethod]
+        public void CanParseAndRebuildEachBlock()
+        {
+            var result = ParseSampleLesson();
+            var block = result.Document;
+            CanParseAndRebuildEachBlock_Inner(block);
+        }
+
+        private void CanParseAndRebuildEachBlock_Inner(LessonBlockBase block)
+        {
+            foreach (var c in block.Children)
+            {
+                if (c is LessonBlockBase)
+                {
+                    CanParseAndRebuildEachBlock_Inner(c as LessonBlockBase);
+                }
+            }
+
+            var expected = block.ContentBetweenFirstAndLastSpan.Text;
+            var actual = block.BuildTextFromSpans();
+
+            AssertEqualWithDiff(expected, actual, block);
+        }
+
+        private void AssertEqualWithDiff(string expected, string actual, object debugData = null)
+        {
+            int? iFirstDiff = null;
+
+            // Work from the start
+            for (int i = 0; i < expected.Length && i < actual.Length; i++)
+            {
+                if (expected[i] != actual[i])
+                {
+                    iFirstDiff = i;
+                    break;
+                }
+            }
+
+            if (!iFirstDiff.HasValue)
+            {
+                if (expected.Length == actual.Length)
+                {
+                    return;
+                }
+                else
+                {
+                    iFirstDiff = Math.Min(expected.Length, actual.Length);
+                }
+            }
+
+            int? iExpectedLastDiff = null;
+            int? iActualLastDiff = null;
+
+            for (int iRev = 0; iRev < expected.Length && iRev < actual.Length; iRev++)
+            {
+                var iExpected = expected.Length - 1 - iRev;
+                var iActual = actual.Length - 1 - iRev;
+
+                if (expected[iExpected] != actual[iActual])
+                {
+                    iExpectedLastDiff = iExpected;
+                    iActualLastDiff = iActual;
+                    break;
+                }
+            }
+
+            var expectedDiff = iFirstDiff.Value < expected.Length ?
+                expected.Substring(iFirstDiff.Value, iExpectedLastDiff.Value - iFirstDiff.Value) : "";
+            var actualDiff = iFirstDiff.Value < actual.Length ?
+                actual.Substring(iFirstDiff.Value, iActualLastDiff.Value - iFirstDiff.Value) : "";
+
+            expectedDiff = expectedDiff.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
+            actualDiff = actualDiff.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
+
+            // Extra variables for debugging
+            var expectedFormatted = expected.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
+            var actualFormatted = actual.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
+
+            var compareStr = expectedFormatted + "\r\n" + actualFormatted + "\r\n";
+            var debugData2 = debugData;
+
+            Assert.Fail("The string do not match: Expected: '" + expectedDiff + "' Actual:'" + actualDiff + "'");
+        }
+
+        [TestMethod]
+        public void CanParseAndRebuildDocument()
+        {
+            var result = ParseSampleLesson();
+            var resultStr = result.BuildTextFromSpans();
+
+            var lesson = Lessons.LessonLoader.LoadSampleLesson();
+
+            AssertEqualWithDiff(lesson, resultStr, result);
+            Assert.AreEqual(lesson, resultStr);
+        }
 
     }
 

@@ -9,6 +9,16 @@ namespace TutorialEngine
     public class LessonSyntaxTree
     {
         public LessonDocument Document { get; set; }
+
+        public List<LessonSpan> FlattenSpans()
+        {
+            return Document.FlattenSpans();
+        }
+
+        public string BuildTextFromSpans()
+        {
+            return Document.BuildTextFromSpans();
+        }
     }
 
     public abstract class LessonNode
@@ -29,7 +39,20 @@ namespace TutorialEngine
 
     public abstract class LessonSpan : LessonNode
     {
+        public StringWithIndex SkippedPreText { get; internal set; }
         public LessonSpan(StringWithIndex content) : base(content) { }
+    }
+
+    public class LessonEnd : LessonSpan
+    {
+        public LessonEnd(StringWithIndex content)
+            : base(content)
+        {
+            if (content.Length != 0)
+            {
+                throw new ArgumentException("LessonEnd cannot contain content");
+            }
+        }
     }
 
     public class LessonComment : LessonSpan
@@ -45,10 +68,116 @@ namespace TutorialEngine
     public abstract class LessonBlockBase : LessonNode
     {
         public List<LessonNode> Children { get; private set; }
+        //public StringWithIndex SkippedPreText
+        //{
+        //    get
+        //    {
+        //        var firstSpanSkippedIndex = FirstSpan().SkippedPreText.Index;
+        //        var skippedPreText = new StringWithIndex(Content.Source, firstSpanSkippedIndex, Content.Index - firstSpanSkippedIndex);
+        //        return skippedPreText;
+        //    }
+        //}
+
+        public StringWithIndex ContentBetweenFirstAndLastSpan
+        {
+            get
+            {
+                var firstSpan = FirstSpan();
+                var lastSpan = LastSpan();
+
+                var firstSpanSkippedIndex = firstSpan.SkippedPreText.Index;
+                var lastSpanAfterIndex = lastSpan.Content.GetIndexAfter();
+
+                return new StringWithIndex(Content.Source, firstSpanSkippedIndex, lastSpanAfterIndex - firstSpanSkippedIndex);
+            }
+        }
+
         public LessonBlockBase(StringWithIndex content)
             : base(content)
         {
             Children = new List<LessonNode>();
+        }
+
+        private LessonSpan FirstSpan()
+        {
+            foreach (var c in Children)
+            {
+                if (c is LessonBlockBase)
+                {
+                    var firstSpan = (c as LessonBlockBase).FirstSpan();
+                    if (firstSpan != null)
+                    {
+                        return firstSpan;
+                    }
+                }
+                else
+                {
+                    return c as LessonSpan;
+                }
+            }
+
+            // This shouldn't happen unless this is a completely empty block
+            return null;
+        }
+
+        private LessonSpan LastSpan()
+        {
+            for (int i = Children.Count - 1; i >= 0; i--)
+            {
+                var c = Children[i];
+
+                if (c is LessonBlockBase)
+                {
+                    var firstSpan = (c as LessonBlockBase).LastSpan();
+                    if (firstSpan != null)
+                    {
+                        return firstSpan;
+                    }
+                }
+                else
+                {
+                    return c as LessonSpan;
+                }
+            }
+
+            // This shouldn't happen unless this is a completely empty block
+            return null;
+        }
+
+        public List<LessonSpan> FlattenSpans()
+        {
+            var spans = new List<LessonSpan>();
+            FlattenSpans(spans);
+            return spans;
+        }
+
+        private void FlattenSpans(List<LessonSpan> spans)
+        {
+            foreach (var c in Children)
+            {
+                if (c is LessonBlockBase)
+                {
+                    (c as LessonBlockBase).FlattenSpans(spans);
+                }
+                else
+                {
+                    spans.Add(c as LessonSpan);
+                }
+            }
+        }
+
+        public string BuildTextFromSpans()
+        {
+            var spans = FlattenSpans();
+
+            var sb = new StringBuilder();
+
+            foreach (var span in spans)
+            {
+                sb.Append(span.SkippedPreText.Text + span.Content.Text);
+            }
+
+            return sb.ToString();
         }
 
         public override string ToString()
@@ -80,6 +209,8 @@ namespace TutorialEngine
                 return Children.Where(c => c is LessonStep).Cast<LessonStep>().ToList();
             }
         }
+
+
     }
 
     public class LessonTitle : LessonSpan

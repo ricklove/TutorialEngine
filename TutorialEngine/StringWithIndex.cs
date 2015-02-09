@@ -35,6 +35,11 @@ namespace TutorialEngine
 
     public static class ParseHelper
     {
+        public static int GetIndexAfter(this StringWithIndex text)
+        {
+            return text.Index + text.Length;
+        }
+
         public static StringWithIndex Trim(this StringWithIndex text, params char[] chars)
         {
             return text.TrimStart(chars).TrimEnd(chars);

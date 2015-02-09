@@ -34,11 +34,47 @@ namespace TutorialEngine
                 document.Children.Add(ParseStep(s));
             }
 
+            // Add an end of file span (to catch pretext that was not processed)
+            document.Children.Add(new LessonEnd(new StringWithIndex(text.Text, text.Length, 0)));
 
-
-            //// TODO: LOW PRIORITY Decorate the Nodes with their comments
+            DecorateSpansWithSkippedText(document);
 
             return document;
+        }
+
+        private static void DecorateSpansWithSkippedText(LessonDocument document)
+        {
+            // Decorate the LessonSpans with skipped parts
+            var spans = document.FlattenSpans();
+
+            // Find gaps between the spans
+            LessonSpan lastSpan = null;
+
+            foreach (var span in spans)
+            {
+                var nextExpectedIndex = lastSpan != null ? lastSpan.Content.GetIndexAfter() : 0;
+                lastSpan = span;
+
+                if (span.Content.Index > nextExpectedIndex)
+                {
+                    // Get skipped content
+                    var skipLength = span.Content.Index - nextExpectedIndex;
+                    var skipContent = new StringWithIndex(document.Content.Source, nextExpectedIndex, skipLength);
+                    span.SkippedPreText = skipContent;
+                }
+                // TODO: move to testing
+                else if (span.Content.Index == nextExpectedIndex)
+                {
+                    // Blank Skipped
+                    span.SkippedPreText = new StringWithIndex(document.Content.Source, nextExpectedIndex, 0);
+                }
+                else
+                {
+                    throw new ArgumentException("The document is malformed and has overlapping spans");
+                }
+
+            }
+
         }
 
         private LessonNode ParseStep(StringWithIndex text)
