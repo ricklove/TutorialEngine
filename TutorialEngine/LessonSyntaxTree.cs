@@ -239,9 +239,14 @@ namespace TutorialEngine
         public LessonStepTitle(StringWithIndex content) : base(content, "# STEP = ", "\r\n") { }
     }
 
+    public class LessonBlankTitlePlaceholder : LessonSpan
+    {
+        public LessonBlankTitlePlaceholder(StringWithIndex content, string startMarker, string endMarker) : base(content, startMarker, endMarker) { }
+    }
+
     public class LessonFileMethodReference : LessonSpan
     {
-        public LessonFileMethodReference(StringWithIndex content) : base(content, "# FILE = ", "\r\n") { }
+        public LessonFileMethodReference(StringWithIndex content) : base(content, "## FILE = ", "\r\n") { }
     }
 
     public class LessonStep : LessonBlockBase
@@ -271,6 +276,32 @@ namespace TutorialEngine
                 return Children.Where(c => c is LessonGoal).Cast<LessonGoal>().FirstOrDefault();
             }
         }
+
+        public LessonSummary Summary
+        {
+            get
+            {
+                return Children.Where(c => c is LessonSummary).Cast<LessonSummary>().FirstOrDefault();
+            }
+        }
+
+        public LessonTest Test
+        {
+            get
+            {
+                return Children.Where(c => c is LessonTest).Cast<LessonTest>().FirstOrDefault();
+            }
+        }
+
+
+        public LessonExplanation Explanation
+        {
+            get
+            {
+                return Children.Where(c => c is LessonExplanation).Cast<LessonExplanation>().FirstOrDefault();
+            }
+        }
+
 
         public LessonFile File
         {
@@ -307,6 +338,19 @@ namespace TutorialEngine
         }
     }
 
+    public class LessonSummary : LessonBlockBase
+    {
+        public LessonSummary(StringWithIndex content) : base(content) { }
+
+        public List<LessonParagraph> Paragraphs
+        {
+            get
+            {
+                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
+            }
+        }
+    }
+
     public class LessonFile : LessonBlockBase
     {
         public LessonFile(StringWithIndex content) : base(content) { }
@@ -323,6 +367,19 @@ namespace TutorialEngine
     public class LessonTest : LessonBlockBase
     {
         public LessonTest(StringWithIndex content) : base(content) { }
+
+        public List<LessonParagraph> Paragraphs
+        {
+            get
+            {
+                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
+            }
+        }
+    }
+
+    public class LessonExplanation : LessonBlockBase
+    {
+        public LessonExplanation(StringWithIndex content) : base(content) { }
 
         public List<LessonParagraph> Paragraphs
         {

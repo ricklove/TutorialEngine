@@ -201,6 +201,18 @@ namespace TutorialEngine.Tests
         }
 
 
+        [TestMethod]
+        public void StepsHaveASummary()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                Assert.IsNotNull(step.Summary);
+                Assert.IsTrue(!string.IsNullOrWhiteSpace(step.Summary.Content.Text));
+            }
+        }
+
         #region General Document Integrity Tests
 
         [TestMethod]

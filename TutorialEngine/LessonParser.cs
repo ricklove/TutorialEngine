@@ -118,13 +118,31 @@ namespace TutorialEngine
 
             // Add Goal
             var goalPart = parts.First(p => p.Text.StartsWith("\n## GOAL"));
-            step.Children.Add(ParseGoal(goalPart.TrimStart("\n## GOAL")));
+            step.Children.Add(ParseGoal(goalPart));
+
+            // Add Summary
+            var summaryPart = parts.First(p => p.Text.StartsWith("\n## SUMMARY"));
+            step.Children.Add(ParseSummary(summaryPart));
+
+            // Add Test
+            var testPart = parts.FirstOrDefault(p => p.Text.StartsWith("\n## TEST"));
+            if (testPart != null)
+            {
+                step.Children.Add(ParseTest(testPart));
+            }
+
+            // Add Explanation
+            var explanationPart = parts.FirstOrDefault(p => p.Text.StartsWith("\n## EXPLANATION"));
+            if (explanationPart != null)
+            {
+                step.Children.Add(ParseExplanation(explanationPart));
+            }
 
             // Add File
             var filePart = parts.FirstOrDefault(p => p.Text.StartsWith("\n## FILE = "));
             if (filePart != null)
             {
-                step.Children.Add(ParseFile(filePart.TrimStart("\n## FILE = ")));
+                step.Children.Add(ParseFile(filePart));
             }
 
 
@@ -160,7 +178,13 @@ namespace TutorialEngine
 
             var goal = new LessonGoal(text);
 
-            var paragraphs = GetParagraphs(text);
+            var parts = text.SplitAfterFirstLine();
+
+            // Parse the title
+            var titlePart = parts[0];
+            goal.Children.Add(new LessonBlankTitlePlaceholder(titlePart, "## GOAL", "\r\n"));
+
+            var paragraphs = GetParagraphs(parts[1]);
 
             // Remove blank paragraphs
             paragraphs = paragraphs.Where(p => p.Phrases.Count > 0 || p.Code != null);
@@ -168,6 +192,74 @@ namespace TutorialEngine
             goal.Children.AddRange(paragraphs);
 
             return goal;
+        }
+
+        private LessonSummary ParseSummary(StringWithIndex text)
+        {
+            text = text.Trim();
+
+            var summary = new LessonSummary(text);
+
+            var parts = text.SplitAfterFirstLine();
+
+            // Parse the title
+            var titlePart = parts[0];
+            summary.Children.Add(new LessonBlankTitlePlaceholder(titlePart, "## SUMMARY", "\r\n"));
+
+            var paragraphs = GetParagraphs(parts[1]);
+
+            // Remove blank paragraphs
+            paragraphs = paragraphs.Where(p => p.Phrases.Count > 0 || p.Code != null);
+
+            summary.Children.AddRange(paragraphs);
+
+            return summary;
+        }
+
+        private LessonTest ParseTest(StringWithIndex text)
+        {
+            text = text.Trim();
+
+            var test = new LessonTest(text);
+
+            var parts = text.SplitAfterFirstLine();
+
+            // Parse the title
+            var titlePart = parts[0];
+            test.Children.Add(new LessonBlankTitlePlaceholder(titlePart, "## TEST", "\r\n"));
+
+            var paragraphs = GetParagraphs(parts[1]);
+
+            // Remove blank paragraphs
+            paragraphs = paragraphs.Where(p => p.Code != null);
+
+            test.Children.AddRange(paragraphs);
+
+            return test;
+        }
+
+        private LessonExplanation ParseExplanation(StringWithIndex text)
+        {
+            text = text.Trim();
+
+            var explanation = new LessonExplanation(text);
+
+            var parts = text.SplitAfterFirstLine();
+
+            // Parse the title
+            var titlePart = parts[0];
+            explanation.Children.Add(new LessonBlankTitlePlaceholder(titlePart, "## EXPLANATION", "\r\n"));
+
+            // TODO: Parse explanation
+
+            //var paragraphs = GetParagraphs(parts[1]);
+
+            //// Remove blank paragraphs
+            //paragraphs = paragraphs.Where(p => p.Code != null);
+
+            //explanation.Children.AddRange(paragraphs);
+
+            return explanation;
         }
 
         private LessonFile ParseFile(StringWithIndex text)
@@ -183,8 +275,7 @@ namespace TutorialEngine
             file.Children.Add(new LessonFileMethodReference(titlePart));
 
             // Parse the paragraphs
-            var paragraphsText = parts[1];
-            var paragraphs = GetParagraphs(paragraphsText);
+            var paragraphs = GetParagraphs(parts[1]);
 
             // Remove blank paragraphs
             paragraphs = paragraphs.Where(p => p.Code != null);

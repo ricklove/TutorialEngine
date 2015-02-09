@@ -58,6 +58,12 @@
 
 - Parse File 
 
+### 14:50-15:13
+
+- Fix GOAL parsing
+- Parse SUMMARY
+- Parse TEST
+- Start Parse EXPLANATION
 
 # Tasks
 
