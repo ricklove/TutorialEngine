@@ -54,13 +54,14 @@
 
 - Test that all SkippedPreText contains only whitespace or comment lines
 
-### 13:42-14:18
+### 13:42-14:32
 
 - Parse File 
 
 
 # Tasks
 
+- Steps is not processed in order!
 
 ## Implement Parser
 

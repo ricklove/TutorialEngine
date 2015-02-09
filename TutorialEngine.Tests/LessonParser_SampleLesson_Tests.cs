@@ -189,9 +189,11 @@ namespace TutorialEngine.Tests
 
             foreach (var step in result.Document.Steps)
             {
-                var goal = step.Goal;
+                var file = step.File;
 
-                foreach (var paragraph in goal.Paragraphs)
+                if (file == null) { continue; }
+
+                foreach (var paragraph in file.Paragraphs)
                 {
                     Assert.IsTrue(paragraph.Code != null);
                 }

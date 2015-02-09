@@ -271,6 +271,14 @@ namespace TutorialEngine
                 return Children.Where(c => c is LessonGoal).Cast<LessonGoal>().FirstOrDefault();
             }
         }
+
+        public LessonFile File
+        {
+            get
+            {
+                return Children.Where(c => c is LessonFile).Cast<LessonFile>().FirstOrDefault();
+            }
+        }
     }
 
     public class LessonInstructions : LessonBlockBase
