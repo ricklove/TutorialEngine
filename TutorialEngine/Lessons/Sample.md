@@ -4,18 +4,8 @@
 // Steps should be defined to help the user navigate the lesson
 # STEP = Find Comment Where to Insert Code
 
-// The File command will select the file and method of concern
-// This will set the content for that method in the file
-// The rest of the files in the project will be based on the default tutorial template
-// Code should be indented one tab (and a blank space should be before it)
-## FILE = TranslateCuby.cs > Update
-
-    // Get player's input
-
-// Lesson indicates the lesson start
 // Each instruction should be marked with a dash
 // Separate paragraphs with an extra blank line
-## LESSON 
 
 - In order to move a Game Object, 
 - we have to manipulate the Transform component on that Game Object. 
@@ -27,14 +17,24 @@
 - First we need to get the player's input.
 - Look in the editor and find the comment where we will enter code:
 
+
+// The File section will select the file and method of concern
+// The File section is optional
+// This will set the content for that method in the file
+// The rest of the files in the project will be based on the default tutorial template
+// Code should be indented one tab (and a blank space should be before it)
+## FILE = TranslateCuby.cs > Update
+
+    // Get player's input
+
 // The goal will be clearly highlighted for the user to have a clear objective
-### GOAL
+## GOAL
 
 - Find:
 
 	// Get player's input
 
-### SUMMARY
+## SUMMARY
 
 - Good
 - We are ready to enter our code
@@ -50,7 +50,7 @@
 
 - Good, now we need to enter the following code:
 
-### GOAL
+## GOAL
 
 -Enter:
 
@@ -60,7 +60,7 @@
 // The tutorial engine will indicate mistakes and help the user enter the exact code
 // The tutorial author should not worry about providing hints to help the user enter
 // the correct code
-### TEST
+## TEST
 
 	// Get player's input
 	float h = Input.getAxis(“horizontal”); 
@@ -70,7 +70,7 @@
 // Then provide indented statements to explain parts of that code
 // Quote actual code in that explanation to call it out
 // When the user hovers over a quoted word, it will be highlighted in the code sample and explanations
-### EXPLANATION
+## EXPLANATION
 
 * float h
     - a "float" is a number with a decimal point
@@ -89,7 +89,7 @@
     - 'h' will be 1 (positive one) when the user hit's the right arrow
     - 'h' will be -1 (negative one) when the user hit's the left arrow
 
-### SUMMARY
+## SUMMARY
 
 - Great!
 - Now, we have the player's input in the variable called h.
@@ -104,19 +104,19 @@
 
 - Let's use the "translate" method of the "transform" to move the object.
 
-### GOAL
+## GOAL
 
 - Enter:
 
     transform.translate(Vector3.right * time.deltaTime);
 
-### TEST
+## TEST
 
 	// Get player's input
 	float h = Input.getAxis(“horizontal”); 
 	transform.translate(Vector3.right * h * time.deltaTime);
 
-### EXPLANATION
+## EXPLANATION
 
 * transform.Translate
     - "transform" controls the position, rotation, and sclae (size) of an object
@@ -140,7 +140,7 @@
 * transform.translate(Vector3.right * h * time.deltaTime);
     - all together, this will make our user move left or right the appropriate amount for a single frame
 
-### SUMMARY
+## SUMMARY
 
 - Great job!
 - Now the user can control Cuby and make him move left or right.

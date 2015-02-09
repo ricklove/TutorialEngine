@@ -26,17 +26,6 @@ namespace TutorialEngine.Tests
         }
 
         [TestMethod]
-        public void CanParseAndRebuildDocument()
-        {
-            var result = ParseSampleLesson();
-            var resultStr = result.ToString();
-
-            var lesson = Lessons.LessonLoader.LoadSampleLesson();
-
-            Assert.AreEqual(lesson, resultStr);
-        }
-
-        [TestMethod]
         public void HasTitle()
         {
             var result = ParseSampleLesson();
@@ -51,6 +40,34 @@ namespace TutorialEngine.Tests
             Assert.IsNotNull(result.Document.Steps);
             Assert.IsTrue(result.Document.Steps.Count > 0);
         }
+
+        [TestMethod]
+        public void StepsHaveInstructions()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                Assert.IsNotNull(step.Instructions);
+                Assert.IsTrue(!string.IsNullOrWhiteSpace(step.Instructions.Content.Text));
+            }
+        }
+
+        // TODO: Test the step title
+
+
+
+        [TestMethod]
+        public void CanParseAndRebuildDocument()
+        {
+            var result = ParseSampleLesson();
+            var resultStr = result.ToString();
+
+            var lesson = Lessons.LessonLoader.LoadSampleLesson();
+
+            Assert.AreEqual(lesson, resultStr);
+        }
+
     }
 
 }

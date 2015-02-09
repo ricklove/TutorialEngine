@@ -10,14 +10,12 @@ namespace TutorialEngine
     {
         public LessonSyntaxTree ParseLesson(string lessonDoc)
         {
-            var document = ParseDocument(lessonDoc, 0, lessonDoc.Length);
+            var document = ParseDocument(new StringWithIndex(lessonDoc, 0, lessonDoc.Length));
             return new LessonSyntaxTree() { Document = document };
         }
 
-        private LessonDocument ParseDocument(string lessonDoc, int start, int length)
+        private LessonDocument ParseDocument(StringWithIndex text)
         {
-            var text = new StringWithIndex(lessonDoc, start, length);
-
             var sections = text.SplitWithoutModification(new string[] { "\n# STEP = " });
 
             var header = sections[0];
@@ -31,7 +29,10 @@ namespace TutorialEngine
             document.Children.Add(new LessonTitle(title));
 
             // Process the steps
-
+            foreach (var s in steps)
+            {
+                document.Children.Add(ParseStep(s));
+            }
 
 
 
@@ -40,19 +41,50 @@ namespace TutorialEngine
             return document;
         }
 
-
-
-        private LessonBlockBase ParseBlock(string lessonDoc, int start, int length)
+        private LessonNode ParseStep(StringWithIndex text)
         {
-            // Separate the major block elements
-            throw new NotImplementedException();
+            text = text.Trim();
+            var step = new LessonStep(text);
 
+            // Divide the parts
+            var parts = text.SplitWithoutModification("\n#");
+
+            // The header includes the title and the instructions
+            var header = parts[0];
+            var headerParts = header.SplitAfterFirstLine();
+
+            // Parse the step title
+            var titlePart = headerParts[0];
+
+            // Add instructions - the first section (no header)
+            var instructionsPart = headerParts[1];
+            step.Children.Add(ParseInstructions(instructionsPart));
+
+            // Add other parts
+
+            return step;
         }
 
-        private LessonNode ParseNode(string lessonDoc, int start, int length)
+        private LessonInstructions ParseInstructions(StringWithIndex text)
         {
-            throw new NotImplementedException();
+            var lesson = new LessonInstructions(text);
+
+            return lesson;
         }
+
+        //private LessonBlockBase ParseBlock(string lessonDoc, int start, int length)
+        //{
+        //    // Separate the major block elements
+        //    throw new NotImplementedException();
+
+        //}
+
+
+
+        //private LessonNode ParseNode(string lessonDoc, int start, int length)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
     }
 

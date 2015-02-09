@@ -24,10 +24,11 @@
 
 - Add TDD
 
-### 5:46-
+### 5:46-6:28
 
 - Continue implementing parser
 
+## Hour 
 
 # Tasks
 

@@ -81,6 +81,17 @@ namespace TutorialEngine
             return trimmed;
         }
 
+        public static List<StringWithIndex> SplitAfterFirstLine(this StringWithIndex text)
+        {
+            var area = text.Text;
+            var lineBreakIndex = area.IndexOf("\r\n");
+
+            return new List<StringWithIndex>() {
+                text.Substring(0, lineBreakIndex),
+                text.Substring(lineBreakIndex+2)
+            };
+        }
+
         public static List<StringWithIndex> SplitWithoutModification(this StringWithIndex text, params string[] separatorStarts)
         {
             var parts = new List<StringWithIndex>();

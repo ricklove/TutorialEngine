@@ -26,6 +26,8 @@ namespace TutorialEngine
         }
     }
 
+    #region LessonBlocks
+
     public abstract class LessonBlockBase : LessonNode
     {
         public List<LessonNode> Children { get; private set; }
@@ -69,7 +71,24 @@ namespace TutorialEngine
     public class LessonStep : LessonBlockBase
     {
         public LessonStep(StringWithIndex content) : base(content) { }
+
+        public LessonInstructions Instructions
+        {
+            get
+            {
+                return Children.Where(c => c is LessonInstructions).Cast<LessonInstructions>().FirstOrDefault();
+            }
+        }
     }
+
+    public class LessonInstructions : LessonBlockBase
+    {
+        public LessonInstructions(StringWithIndex content) : base(content) { }
+    }
+
+    #endregion
+
+    #region LessonSpans
 
     public abstract class LessonSpan : LessonNode
     {
@@ -95,4 +114,6 @@ namespace TutorialEngine
             return "% TITLE = " + Content + "\r\n";
         }
     }
+
+    #endregion
 }
