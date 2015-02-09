@@ -27,8 +27,15 @@
 ### 5:46-6:28
 
 - Continue implementing parser
+- Start Parsing steps
 
-## Hour 
+## Hour 5
+
+### 6:28-7:34
+
+- Parse Instructions
+- Parse Goal
+
 
 # Tasks
 

@@ -55,21 +55,83 @@ namespace TutorialEngine
 
             // Parse the step title
             var titlePart = headerParts[0];
+            step.Children.Add(new LessonTitle(titlePart.TrimStart("# STEP =")));
 
             // Add instructions - the first section (no header)
             var instructionsPart = headerParts[1];
             step.Children.Add(ParseInstructions(instructionsPart));
 
-            // Add other parts
+            // Add Goal
+            var goalPart = parts.First(p => p.Text.StartsWith("\n## GOAL"));
+            step.Children.Add(ParseGoal(goalPart));
+
+
+            // TODO: Add other parts
 
             return step;
         }
 
         private LessonInstructions ParseInstructions(StringWithIndex text)
         {
-            var lesson = new LessonInstructions(text);
+            text = text.Trim();
 
-            return lesson;
+            var instructions = new LessonInstructions(text);
+
+            var paragraphs = GetParagraphs(text);
+
+            // Remove blank paragraphs
+            paragraphs = paragraphs.Where(p => p.Phrases.Count > 0);
+
+            instructions.Children.AddRange(paragraphs);
+
+            return instructions;
+        }
+
+        private LessonGoal ParseGoal(StringWithIndex text)
+        {
+            text = text.Trim();
+
+            var goal = new LessonGoal(text);
+
+            var paragraphs = GetParagraphs(text);
+
+            // Remove blank paragraphs
+            paragraphs = paragraphs.Where(p => p.Phrases.Count > 0 || p.Code != null);
+
+            goal.Children.AddRange(paragraphs);
+
+            return goal;
+        }
+
+        private IEnumerable<LessonParagraph> GetParagraphs(StringWithIndex text)
+        {
+            var paragaphParts = text.SplitWithoutModificationRegex(@"\r\n(?:\s*\r\n)+");
+            var paragraphs = paragaphParts.Select(p => ParseParagraph(p));
+
+            return paragraphs;
+        }
+
+        private LessonParagraph ParseParagraph(StringWithIndex text)
+        {
+            text = text.Trim();
+
+            var paragraph = new LessonParagraph(text);
+
+            var lines = text.SplitLines();
+
+            if (lines.Any(l => l.Text.StartsWith("-")))
+            {
+                var phrases = lines.Where(l => l.Text.StartsWith("-")).Select(l => new LessonPhrase(l));
+                paragraph.Children.AddRange(phrases);
+
+            }
+            else if (lines.All(l => l.Text.StartsWith("\t")))
+            {
+                var codeText = text;
+                paragraph.Children.Add(new LessonCode(text));
+            }
+
+            return paragraph;
         }
 
         //private LessonBlockBase ParseBlock(string lessonDoc, int start, int length)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TutorialEngine
@@ -81,6 +82,11 @@ namespace TutorialEngine
             return trimmed;
         }
 
+        public static List<StringWithIndex> SplitLines(this StringWithIndex text)
+        {
+            return text.Split("\r\n");
+        }
+
         public static List<StringWithIndex> SplitAfterFirstLine(this StringWithIndex text)
         {
             var area = text.Text;
@@ -90,6 +96,32 @@ namespace TutorialEngine
                 text.Substring(0, lineBreakIndex),
                 text.Substring(lineBreakIndex+2)
             };
+        }
+
+        public static List<StringWithIndex> SplitWithoutModificationRegex(this StringWithIndex text, string regexStr)
+        {
+            var parts = new List<StringWithIndex>();
+
+            var regex = new Regex(regexStr);
+            var area = text.Text;
+
+            var prevIndex = 0;
+            var m = regex.Match(area);
+
+            while (m.Success)
+            {
+                var index = m.Index;
+
+                parts.Add(text.Substring(prevIndex, index - prevIndex));
+
+                prevIndex = index;
+                m = regex.Match(area, index + 1);
+            }
+
+            // Add last part
+            parts.Add(text.Substring(prevIndex, area.Length - prevIndex));
+
+            return parts;
         }
 
         public static List<StringWithIndex> SplitWithoutModification(this StringWithIndex text, params string[] separatorStarts)

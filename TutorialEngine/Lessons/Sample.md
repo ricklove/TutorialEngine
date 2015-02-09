@@ -9,7 +9,7 @@
 
 - In order to move a Game Object, 
 - we have to manipulate the Transform component on that Game Object. 
-- The Transom holds the position, rotation, and Scale. 
+- The Transform holds the position, rotation, and Scale. 
 
 - Moving an Object is known as "Translating" the Object. 
 - The Unity API gives us a transform.Translate function that lets us move an object.  
