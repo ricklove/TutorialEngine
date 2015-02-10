@@ -127,10 +127,19 @@
 
 ## Hour 17
 
+### 15:42-16:36
 
+- Next will cause the comments to continue
+- Show the goal
+
+### 16:37-17:49
+
+- Handle filesystem
+- Create new scene
 
 # Tasks
 
+- Parse the FILE reference correctly
 - Persist editor state: EditorPrefs
 
 

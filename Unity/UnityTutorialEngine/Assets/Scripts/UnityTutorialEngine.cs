@@ -8,13 +8,19 @@ public class UnityTutorialEngine
 {
     private TutorialController _tutorialController;
 
+    public bool IsLessonLoaded { get { return _tutorialController.IsLessonLoaded; } }
+
     public UnityTutorialEngine(UnityInstructionPresenterViewModel instructionPresenter)
     {
         _tutorialController = new TutorialController();
 
         // Set up presenters
         _tutorialController.AddPresenter(instructionPresenter);
+        _tutorialController.AddPresenter(new UnityFileSystemPresenter());
+    }
 
+    public void LoadSampleLesson()
+    {
         // Load sample lesson
         var sampleLessonText = TutorialEngine.Lessons.LessonLoader.LoadSampleLesson();
         var parser = new TutorialEngine.LessonParser();
@@ -68,6 +74,17 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
 
     void OnGUI()
     {
+        if (!_engine.IsLessonLoaded)
+        {
+            // Load lesson
+            if (GUILayout.Button("Load Sample Lesson"))
+            {
+                _engine.LoadSampleLesson();
+            }
+
+            return;
+        }
+
         OnGUI_ChatWindow();
 
 
@@ -176,10 +193,10 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
                         pauseTime = chatDelay;
                     }
 
-                    if (_lastMaxScrollPosition.y - _scrollPosition.y < 0.1f)
-                    {
-                        _scrollPosition.y = float.MaxValue;
-                    }
+                    //if (_lastMaxScrollPosition.y - _scrollPosition.y < 0.1f)
+                    //{
+                    _scrollPosition.y = float.MaxValue;
+                    //}
 
                     // Regroup lines
                     _groupedLines = GroupLines(_lines);

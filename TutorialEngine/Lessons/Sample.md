@@ -15,7 +15,6 @@
 - The Unity API gives us a transform.Translate function that lets us move an object.  
 
 - First we need to get the player's input.
-- Look in the editor and find the comment where we will enter code:
 
 
 // The File section will select the file and method of concern
@@ -30,7 +29,7 @@
 // The goal will be clearly highlighted for the user to have a clear objective
 ## GOAL
 
-- Find:
+- Look in the editor and find the comment where we will enter code:
 
 	// Get player's input
 
@@ -48,7 +47,7 @@
 
 // "## LESSON" can be omited if there is no "## FILE" section
 
-- Good, now we need to enter the following code:
+- Now we need to enter the following code:
 
 ## GOAL
 

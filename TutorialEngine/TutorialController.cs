@@ -14,6 +14,14 @@ namespace TutorialEngine
         private StepState _stepState;
 
         private List<IInstructionPresenter> _instructionPresenters = new List<IInstructionPresenter>();
+        private List<IFileSystemPresenter> _fileSystemPresenters = new List<IFileSystemPresenter>();
+
+
+        public bool IsLessonLoaded
+        {
+            get { return _lesson != null; }
+        }
+
 
         public void AddPresenter(ITutorialPresenter presenter)
         {
@@ -21,10 +29,18 @@ namespace TutorialEngine
 
             if (presenter is IInstructionPresenter)
             {
-                var iPresenter = presenter as IInstructionPresenter;
-                _instructionPresenters.Add(iPresenter);
+                var p = presenter as IInstructionPresenter;
+                _instructionPresenters.Add(p);
 
-                iPresenter.Next += instructionPresenter_Next;
+                p.Next += instructionPresenter_Next;
+                p.ResetCode += instructionPresenter_ResetCode;
+                wasAdded = true;
+            }
+
+            if (presenter is IFileSystemPresenter)
+            {
+                var p = presenter as IFileSystemPresenter;
+                _fileSystemPresenters.Add(p);
                 wasAdded = true;
             }
 
@@ -32,6 +48,11 @@ namespace TutorialEngine
             {
                 throw new NotImplementedException();
             }
+        }
+
+        void instructionPresenter_ResetCode(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         void instructionPresenter_Next(object sender, EventArgs e)
@@ -57,8 +78,72 @@ namespace TutorialEngine
 
             _step = _lesson.Document.Steps[_stepIndex.Value];
 
+            // Load File
+            LoadFileSystemState();
+
             ShowInstructions();
             _stepState = StepState.Instructions;
+        }
+
+        public class FileState
+        {
+            public string Path { get; set; }
+            public string Context { get; set; }
+            public string Content { get; set; }
+        }
+
+        private void LoadFileSystemState()
+        {
+            var fileStates = new List<FileState>();
+
+            // Get file states up to this point
+            for (int i = 0; i <= _stepIndex; i++)
+            {
+                var s = _lesson.Document.Steps[i];
+
+                if (i < _stepIndex)
+                {
+                    // Use FILE
+                    if (s.File != null)
+                    {
+                        fileStates.Add(new FileState() { Path = s.File.Path, Context = s.File.Context, Content = s.File.Code.Text });
+                    }
+
+                    // Use TEST
+                    if (s.Test != null)
+                    {
+                        var lastFileState = fileStates.Last();
+                        fileStates.Add(new FileState() { Path = lastFileState.Path, Context = lastFileState.Context, Content = s.Test.Code.Text });
+                    }
+
+                }
+                else
+                {
+                    // Use FILE 
+                    if (s.File != null)
+                    {
+                        fileStates.Add(new FileState() { Path = s.File.Path, Context = s.File.Context, Content = s.File.Code.Text });
+                    }
+                }
+            }
+
+            // Load the file state
+            foreach (var f in _fileSystemPresenters)
+            {
+                f.CreateDefaultProject();
+
+                foreach (var state in fileStates)
+                {
+                    var fileText = f.GetFile(state.Path);
+                    var fileContent = SetContentsAtContext(fileText, state);
+                    f.SetFile(state.Path, fileContent);
+                }
+            }
+        }
+
+        private string SetContentsAtContext(string fileText, FileState state)
+        {
+            throw new NotImplementedException();
         }
 
         private void GotoNextState()

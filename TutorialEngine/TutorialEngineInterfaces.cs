@@ -15,10 +15,12 @@ namespace TutorialEngine
 
     public interface ICodeEditorPresenter : ITutorialPresenter
     {
-        event EventHandler<StringEventArgs> MethodBodyChanged;
-
         void ShowContext(string filename, string methodName);
-        void SetMethodBody(string filename, string methodName, string body);
+
+
+        //event EventHandler<StringEventArgs> MethodBodyChanged;
+
+        //void SetMethodBody(string filename, string methodName, string body);
     }
 
     public class StringEventArgs : EventArgs
@@ -79,30 +81,34 @@ namespace TutorialEngine
         void ShowGameState(string gameStateName);
     }
 
-    public class Project
-    {
-        public IList<ProjectFile> Files { get; private set; }
+    //public class Project
+    //{
+    //    public IList<ProjectFile> Files { get; private set; }
 
-        public Project(IList<ProjectFile> files = null)
-        {
-            Files = files ?? new List<ProjectFile>();
-        }
-    }
+    //    public Project(IList<ProjectFile> files = null)
+    //    {
+    //        Files = files ?? new List<ProjectFile>();
+    //    }
+    //}
 
-    public class ProjectFile
-    {
-        public string FilePath { get; private set; }
-        public string Contents { get; private set; }
+    //public class ProjectFile
+    //{
+    //    public string FilePath { get; private set; }
+    //    public string Contents { get; private set; }
 
-        public ProjectFile(string filePath, string contents)
-        {
-            FilePath = filePath;
-            Contents = contents;
-        }
-    }
+    //    public ProjectFile(string filePath, string contents)
+    //    {
+    //        FilePath = filePath;
+    //        Contents = contents;
+    //    }
+    //}
 
     public interface IFileSystemPresenter : ITutorialPresenter
     {
-        void OverwriteProjectContents(Project project);
+        void CreateDefaultProject();
+        void SetFile(string filePath, string contents);
+        string GetFile(string filePath);
+
+        //void OverwriteProjectContents(Project project);
     }
 }

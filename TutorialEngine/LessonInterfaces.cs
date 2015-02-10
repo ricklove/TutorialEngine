@@ -91,6 +91,9 @@ namespace TutorialEngine
     {
         ILessonFileMethodReference FileMethodReference { get; }
         ILessonCode Code { get; }
+
+        string Path { get; }
+        string Context { get; }
     }
 
     public interface ILessonFileMethodReference

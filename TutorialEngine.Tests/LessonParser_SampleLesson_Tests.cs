@@ -338,6 +338,7 @@ namespace TutorialEngine.Tests
                     Assert.IsTrue(
                         line.TrimStart() == span.StartMarker
                         || line.StartsWith("//")
+                        || line.StartsWith("---")
                         || string.IsNullOrWhiteSpace(line),
                         "This line was not parsed: " + line
                         );

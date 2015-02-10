@@ -312,7 +312,11 @@ namespace TutorialEngine
             var lines = text.SplitLines();
 
             // Remove comments and blank lines
-            lines = lines.Where(l => !l.Text.StartsWith("//") && !StringHelper.IsNullOrWhiteSpace(l.Text)).ToList();
+            lines = lines.Where(l => 
+                !l.Text.StartsWith("//") 
+                && !l.Text.StartsWith("---") 
+                && !StringHelper.IsNullOrWhiteSpace(l.Text)
+                ).ToList();
 
             if (lines.Count == 0)
             {

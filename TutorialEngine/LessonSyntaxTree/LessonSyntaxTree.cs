@@ -358,6 +358,26 @@ namespace TutorialEngine.LessonSyntaxTree
             }
         }
 
+        public string Path
+        {
+            get
+            {
+                // TODO: Parse this correctly
+                var t = FileMethodReference.Content.Text;
+                var i = t.IndexOf(">");
+                return t.Substring(0, i).Trim();
+            }
+        }
+        public string Context
+        {
+            get
+            {
+                var t = FileMethodReference.Content.Text;
+                var i = t.IndexOf(">");
+                return t.Substring(i + 1).Trim();
+            }
+        }
+
         public LessonCode Code
         {
             get
