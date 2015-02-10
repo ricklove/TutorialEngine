@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TutorialEngine
+namespace TutorialEngine.LessonSyntaxTree
 {
-    public class LessonSyntaxTree
+    public partial class Lesson
     {
         public LessonDocument Document { get; set; }
 
@@ -64,7 +64,7 @@ namespace TutorialEngine
 
     }
 
-    public class LessonEnd : LessonSpan
+    public partial class LessonEnd : LessonSpan
     {
         public LessonEnd(StringWithIndex content)
             : base(content, "", "")
@@ -76,7 +76,7 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonComment : LessonSpan
+    public partial class LessonComment : LessonSpan
     {
         public LessonComment(StringWithIndex content) : base(content, "// ", "\r\n") { }
     }
@@ -202,12 +202,12 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonBlock : LessonBlockBase
+    public partial class LessonBlock : LessonBlockBase
     {
         public LessonBlock(StringWithIndex content) : base(content) { }
     }
 
-    public class LessonDocument : LessonBlockBase
+    public partial class LessonDocument : LessonBlockBase
     {
         public LessonDocument(StringWithIndex content) : base(content) { }
         public LessonDocumentTitle Title
@@ -229,27 +229,27 @@ namespace TutorialEngine
 
     }
 
-    public class LessonDocumentTitle : LessonSpan
+    public partial class LessonDocumentTitle : LessonSpan
     {
         public LessonDocumentTitle(StringWithIndex content) : base(content, "% TITLE = ", "\r\n") { }
     }
 
-    public class LessonStepTitle : LessonSpan
+    public partial class LessonStepTitle : LessonSpan
     {
         public LessonStepTitle(StringWithIndex content) : base(content, "# STEP = ", "\r\n") { }
     }
 
-    public class LessonBlankTitlePlaceholder : LessonSpan
+    public partial class LessonBlankTitlePlaceholder : LessonSpan
     {
         public LessonBlankTitlePlaceholder(StringWithIndex content, string startMarker, string endMarker) : base(content, startMarker, endMarker) { }
     }
 
-    public class LessonFileMethodReference : LessonSpan
+    public partial class LessonFileMethodReference : LessonSpan
     {
         public LessonFileMethodReference(StringWithIndex content) : base(content, "## FILE = ", "\r\n") { }
     }
 
-    public class LessonStep : LessonBlockBase
+    public partial class LessonStep : LessonBlockBase
     {
         public LessonStep(StringWithIndex content) : base(content) { }
 
@@ -312,7 +312,7 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonInstructions : LessonBlockBase
+    public partial class LessonInstructions : LessonBlockBase
     {
         public LessonInstructions(StringWithIndex content) : base(content) { }
 
@@ -325,7 +325,7 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonGoal : LessonBlockBase
+    public partial class LessonGoal : LessonBlockBase
     {
         public LessonGoal(StringWithIndex content) : base(content) { }
 
@@ -338,7 +338,7 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonSummary : LessonBlockBase
+    public partial class LessonSummary : LessonBlockBase
     {
         public LessonSummary(StringWithIndex content) : base(content) { }
 
@@ -351,7 +351,7 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonFile : LessonBlockBase
+    public partial class LessonFile : LessonBlockBase
     {
         public LessonFile(StringWithIndex content) : base(content) { }
 
@@ -364,7 +364,7 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonTest : LessonBlockBase
+    public partial class LessonTest : LessonBlockBase
     {
         public LessonTest(StringWithIndex content) : base(content) { }
 
@@ -377,7 +377,7 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonParagraph : LessonBlockBase
+    public partial class LessonParagraph : LessonBlockBase
     {
         public LessonParagraph(StringWithIndex content) : base(content) { }
 
@@ -398,12 +398,12 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonPhrase : LessonSpan
+    public partial class LessonPhrase : LessonSpan
     {
         public LessonPhrase(StringWithIndex content) : base(content, "- ", "\r\n") { }
     }
 
-    public class LessonCode : LessonSpan
+    public partial class LessonCode : LessonSpan
     {
         public LessonCode(StringWithIndex content) : base(content, "", "") { }
 
@@ -415,7 +415,7 @@ namespace TutorialEngine
     }
 
 
-    public class LessonExplanation : LessonBlockBase
+    public partial class LessonExplanation : LessonBlockBase
     {
         public LessonExplanation(StringWithIndex content) : base(content) { }
 
@@ -429,7 +429,7 @@ namespace TutorialEngine
     }
 
 
-    public class LessonCodeExplanation : LessonBlockBase
+    public partial class LessonCodeExplanation : LessonBlockBase
     {
         public LessonCodeExplanation(StringWithIndex content) : base(content) { }
 
@@ -450,7 +450,7 @@ namespace TutorialEngine
         }
     }
 
-    public class LessonCodeExplanationQuote : LessonSpan
+    public partial class LessonCodeExplanationQuote : LessonSpan
     {
         public LessonCodeExplanationQuote(StringWithIndex content) : base(content, "* ", "\r\n") { }
     }

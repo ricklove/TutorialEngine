@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TutorialEngine.LessonSyntaxTree;
 
 namespace TutorialEngine.Tests
 {
@@ -17,7 +18,7 @@ namespace TutorialEngine.Tests
             var resultStr = result.ToString();
         }
 
-        private static LessonSyntaxTree ParseSampleLesson()
+        private static Lesson ParseSampleLesson()
         {
             var lesson = Lessons.LessonLoader.LoadSampleLesson();
             var parser = new LessonParser();

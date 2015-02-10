@@ -42,8 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LessonInterfaces.cs" />
+    <Compile Include="LessonInterfacesGenerator.cs" />
     <Compile Include="LessonParser.cs" />
-    <Compile Include="LessonSyntaxTree.cs" />
+    <Compile Include="LessonSyntaxTree\LessonSyntaxTree.cs" />
     <Compile Include="Lessons\LessonLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

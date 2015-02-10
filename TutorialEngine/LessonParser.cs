@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TutorialEngine.LessonSyntaxTree;
 
 namespace TutorialEngine
 {
     public class LessonParser
     {
-        public LessonSyntaxTree ParseLesson(string lessonDoc)
+        public Lesson ParseLesson(string lessonDoc)
         {
             var document = ParseDocument(new StringWithIndex(lessonDoc, 0, lessonDoc.Length));
-            return new LessonSyntaxTree() { Document = document };
+            return new Lesson() { Document = document };
         }
 
         private LessonDocument ParseDocument(StringWithIndex text)

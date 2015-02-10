@@ -76,19 +76,22 @@
 
 - Finish parsing
 
-## Hour 10
+## Hour 10-11
 
 ### 4:15-4:45
 
 - Design Tutorial Engine Architecture
 
-### 4:46-
+### 4:46-6:01
 
+- Move the Syntax Tree Classes to their own namespace
+- Create Lesson Interfaces
 
 # Tasks
 
 - Move the Syntax Tree Classes to their own namespace
-- 
+- Define the tutorial engine interfaces
+- Create the tutorial engine
 
 ## Implement Parser
 
