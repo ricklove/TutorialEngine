@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 //namespace TutorialEngine
 //{
@@ -102,7 +101,7 @@ namespace TutorialEngine
                 if (typeof(System.Collections.IList).IsAssignableFrom(pType)
                     && pType.IsGenericType)
                 {
-                    var genericTypeArg = pType.GenericTypeArguments[0];
+                    var genericTypeArg = pType.GetGenericArguments()[0];
                     if (!ShouldIgnore(genericTypeArg))
                     {
                         sb.AppendFormat("\tIList<I{0}> {1} {{ get; }}\r\n", genericTypeArg.Name, prop.Name);
@@ -127,7 +126,7 @@ namespace TutorialEngine
                 if (typeof(System.Collections.IList).IsAssignableFrom(pType)
                     && pType.IsGenericType)
                 {
-                    var genericTypeArg = pType.GenericTypeArguments[0];
+                    var genericTypeArg = pType.GetGenericArguments()[0];
                     AddInterfaceForSelfAndChildrenProperties(interfaceCodeParts, implementationCodeParts, visitHistory, genericTypeArg);
                 }
             }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace TutorialEngine
 {
@@ -189,12 +188,12 @@ namespace TutorialEngine
 
         public static List<StringWithIndex> GetLines(this StringWithIndex text)
         {
-            return Split(text, "\n").Where(l => !string.IsNullOrWhiteSpace(l.Text)).Select(l => l.TrimEnd('\r')).ToList();
+            return Split(text, "\n").Where(l => !StringHelper.IsNullOrWhiteSpace(l.Text)).Select(l => l.TrimEnd('\r')).ToList();
         }
 
         public static string[] GetLines(this string text)
         {
-            return text.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.TrimEnd('\r')).ToArray();
+            return text.Split('\n').Where(l => !StringHelper.IsNullOrWhiteSpace(l)).Select(l => l.TrimEnd('\r')).ToArray();
         }
 
         public static StringWithIndex GetFirstLineValue(this IEnumerable<StringWithIndex> lines, string lineStartMatch)
@@ -278,6 +277,14 @@ namespace TutorialEngine
             {
                 return text;
             }
+        }
+    }
+
+    public static class StringHelper
+    {
+        public static bool IsNullOrWhiteSpace(string text)
+        {
+            return string.IsNullOrEmpty(text) || string.IsNullOrEmpty(text.Trim());
         }
     }
 

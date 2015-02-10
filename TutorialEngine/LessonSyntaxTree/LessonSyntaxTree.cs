@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TutorialEngine.LessonSyntaxTree
 {
@@ -84,15 +83,11 @@ namespace TutorialEngine.LessonSyntaxTree
     public abstract class LessonBlockBase : LessonNode
     {
         public List<LessonNode> Children { get; private set; }
-        //public StringWithIndex SkippedPreText
-        //{
-        //    get
-        //    {
-        //        var firstSpanSkippedIndex = FirstSpan().SkippedPreText.Index;
-        //        var skippedPreText = new StringWithIndex(Content.Source, firstSpanSkippedIndex, Content.Index - firstSpanSkippedIndex);
-        //        return skippedPreText;
-        //    }
-        //}
+
+        public void AddChildren(System.Collections.IEnumerable nodes)
+        {
+            Children.AddRange(nodes.Cast<LessonNode>());
+        }
 
         public StringWithIndex ContentBetweenFirstAndLastSpan
         {

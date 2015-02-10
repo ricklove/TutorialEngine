@@ -99,12 +99,29 @@
 
 ## Hour 13
 
+### 8:45-8:52
+
+- Create UnityTutorialEngine project
+
+### 8:53-9:07
+
+- Import the dll dependency in unity
+- Create Editor Window
+
+### 9:08-10:13
+
+- Implement Tutorial Engine
+
+## Hour 14
+
+### 11:25-
+
 
 
 # Tasks
 
-- Create the tutorial engine
-- Create the UnityTutorialEngine project
+- Implement a scrolling view of comments
+	- Like a chat window
 
 ## Tutorial Engine Design
 

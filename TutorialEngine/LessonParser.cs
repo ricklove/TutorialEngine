@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TutorialEngine.LessonSyntaxTree;
 
 namespace TutorialEngine
@@ -152,7 +151,7 @@ namespace TutorialEngine
             // Order children
             var ordered = step.Children.OrderBy(c => c.Content.Index).ToList();
             step.Children.Clear();
-            step.Children.AddRange(ordered);
+            step.AddChildren(ordered);
 
             return step;
         }
@@ -168,7 +167,7 @@ namespace TutorialEngine
             // Remove blank paragraphs
             paragraphs = paragraphs.Where(p => p.Phrases.Count > 0);
 
-            instructions.Children.AddRange(paragraphs);
+            instructions.AddChildren(paragraphs);
 
             return instructions;
         }
@@ -190,7 +189,7 @@ namespace TutorialEngine
             // Remove blank paragraphs
             paragraphs = paragraphs.Where(p => p.Phrases.Count > 0 || p.Code != null);
 
-            goal.Children.AddRange(paragraphs);
+            goal.AddChildren(paragraphs);
 
             return goal;
         }
@@ -212,7 +211,7 @@ namespace TutorialEngine
             // Remove blank paragraphs
             paragraphs = paragraphs.Where(p => p.Phrases.Count > 0 || p.Code != null);
 
-            summary.Children.AddRange(paragraphs);
+            summary.AddChildren(paragraphs);
 
             return summary;
         }
@@ -250,9 +249,9 @@ namespace TutorialEngine
             // Parse explanation
             // Divide the parts
             var codeExplanationTexts = parts[1].SplitWithoutModification("\n*");
-            var codeExplanations = codeExplanationTexts.Where(t => !string.IsNullOrWhiteSpace(t.Text)).Select(t => ParseCodeExplanation(t));
+            var codeExplanations = codeExplanationTexts.Where(t => !StringHelper.IsNullOrWhiteSpace(t.Text)).Select(t => ParseCodeExplanation(t));
 
-            explanation.Children.AddRange(codeExplanations);
+            explanation.AddChildren(codeExplanations);
 
             return explanation;
         }
@@ -273,7 +272,7 @@ namespace TutorialEngine
             var phraseTexts = parts[1].SplitWithoutModification("-");
             var phrases = phraseTexts.Select(t => new LessonPhrase(t.Trim()));
 
-            codeExp.Children.AddRange(phrases);
+            codeExp.AddChildren(phrases);
 
             return codeExp;
         }
@@ -313,7 +312,7 @@ namespace TutorialEngine
             var lines = text.SplitLines();
 
             // Remove comments and blank lines
-            lines = lines.Where(l => !l.Text.StartsWith("//") && !string.IsNullOrWhiteSpace(l.Text)).ToList();
+            lines = lines.Where(l => !l.Text.StartsWith("//") && !StringHelper.IsNullOrWhiteSpace(l.Text)).ToList();
 
             if (lines.Count == 0)
             {
@@ -323,7 +322,7 @@ namespace TutorialEngine
             if (lines.All(l => l.Text.StartsWith("-")))
             {
                 var phrases = lines.Where(l => l.Text.StartsWith("-")).Select(l => new LessonPhrase(l));
-                paragraph.Children.AddRange(phrases);
+                paragraph.AddChildren(phrases);
 
             }
             else if (lines.All(l => l.Text.StartsWith("\t") || l.Text.StartsWith("    ")))

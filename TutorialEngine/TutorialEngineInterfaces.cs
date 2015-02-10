@@ -2,23 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TutorialEngine
 {
     public interface ITutorialController
     {
         void AddPresenter(ITutorialPresenter presenter);
+        void LoadLesson(ILesson lesson);
     }
 
     public interface ITutorialPresenter { }
 
     public interface ICodeEditorPresenter : ITutorialPresenter
     {
-        event EventHandler<string> MethodBodyChanged;
+        event EventHandler<StringEventArgs> MethodBodyChanged;
 
         void ShowContext(string filename, string methodName);
         void SetMethodBody(string filename, string methodName, string body);
+    }
+
+    public class StringEventArgs : EventArgs
+    {
+        public string Text { get; private set; }
+        public StringEventArgs(string text)
+        {
+            Text = text;
+        }
     }
 
     public class Paragraph
@@ -37,21 +46,19 @@ namespace TutorialEngine
         public string Text { get; private set; }
         public string Code { get; private set; }
 
-        public ParagraphItem(string text, string code)
+        public ParagraphItem(string text, ParagraphItemKind kind)
         {
-            if (string.IsNullOrEmpty(text) && string.IsNullOrEmpty(code)) { throw new ArgumentException("Paragraph Item must have either code or text"); }
-            if (!string.IsNullOrEmpty(text) && !string.IsNullOrEmpty(code)) { throw new ArgumentException("Paragraph Item cannot have both code and text"); }
-
-            Text = text ?? "";
-            Code = code ?? "";
-            Kind = string.IsNullOrEmpty(Code) ? ParagraphItemKind.Text : ParagraphItemKind.Code;
+            Text = kind == ParagraphItemKind.Text ? text : "";
+            Code = kind == ParagraphItemKind.Code ? text : "";
+            Kind = kind;
         }
     }
 
     public enum ParagraphItemKind
     {
         Text,
-        Code
+        Code,
+        BlankLine
     }
 
     public interface IInstructionPresenter : ITutorialPresenter
