@@ -91,6 +91,10 @@
 
 - Complete lesson tree class properties
 
+### 7:01-7:37
+
+- Define the tutorial engine interfaces
+
 
 # Tasks
 
@@ -104,7 +108,7 @@
 ## Implement Unity Runner
 
 - Create the tutorial engine components
-	- Tutorial Engine
+	- Tutorial Controller
 	- Code Editor Presenter
 	- Instruction Presenter
 	- [Advanced] Game Preview Presenter
@@ -117,7 +121,7 @@
 	- (Advanced) App (or Browser Plugin): Run the actual game with an in game tutorial where the code simulates modifying the game. (All possible user edits would need to be pre-compiled into the game, and the app would simulate the user code actually affecting the game. - Because iTunes Store does not allow real scripting.)
 	- [Sync everything at the same time]: Live sync all these up with the dgi server and the user can open up as many presenters as they want and they will all be synced.
 
-- TutorialEngine
+- TutorialController
 	- This will run the tutorial and send instructions to the presenters.
 
 - ILessonCodeEditorPresenter
