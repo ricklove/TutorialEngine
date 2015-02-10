@@ -69,8 +69,43 @@ namespace TutorialEngine
                 _stepState = StepState.Testing;
                 return;
             }
+            else if (_stepState == StepState.Testing)
+            {
+                var didPass = VerifyTest();
+
+                if (!didPass)
+                {
+                    ShowNotification(CreateTestFailNotification());
+                    return;
+                }
+
+                ShowSummary();
+                _stepState = StepState.Summary;
+                return;
+            }
+            else //if (_stepState == StepState.Summary)
+            {
+                LoadNextStep();
+                _stepState = StepState.Instructions;
+                return;
+            }
+        }
+
+        private Paragraph CreateTestFailNotification()
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool VerifyTest()
+        {
+            // Verfiy if the test if correct
+            if (_step.Test == null)
+            {
+                return true;
+            }
 
             throw new NotImplementedException();
+            return false;
         }
 
         private void ShowInstructions()
@@ -91,6 +126,28 @@ namespace TutorialEngine
             foreach (var presenter in _instructionPresenters)
             {
                 presenter.ShowGoal(CreateParagraph(goal.Paragraphs));
+                presenter.EnableNext(true);
+                presenter.EnableResetCode(true);
+            }
+        }
+
+        private void ShowSummary()
+        {
+            var summary = _step.Summary;
+
+            foreach (var presenter in _instructionPresenters)
+            {
+                presenter.ShowInstructions(CreateParagraph(summary.Paragraphs));
+                presenter.EnableNext(true);
+                presenter.EnableResetCode(false);
+            }
+        }
+
+        private void ShowNotification(Paragraph message)
+        {
+            foreach (var presenter in _instructionPresenters)
+            {
+                presenter.ShowNotification(message);
             }
         }
 

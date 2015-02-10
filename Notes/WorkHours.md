@@ -131,6 +131,7 @@
 
 # Tasks
 
+- Persist editor state: EditorPrefs
 
 
 ## Tutorial Engine Design

@@ -68,6 +68,67 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
 
     void OnGUI()
     {
+        OnGUI_ChatWindow();
+
+
+        if (_lines.Count != _viewModel.Lines.Count())
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Next"))
+            {
+                _lines = _viewModel.Lines.ToList();
+                _groupedLines = GroupLines(_lines);
+            }
+
+            GUILayout.EndHorizontal();
+        }
+        else
+        {
+            // Show control buttons
+
+            GUILayout.BeginHorizontal();
+
+            if (_viewModel.IsResetCodeEnabled)
+            {
+                if (GUILayout.Button("Reset Code"))
+                {
+                    _viewModel.OnResetCode();
+                }
+            }
+
+            GUILayout.FlexibleSpace();
+
+            if (_viewModel.IsNextEnabled)
+            {
+                if (GUILayout.Button("Next"))
+                {
+                    _viewModel.OnNext();
+                }
+            }
+
+            GUILayout.EndHorizontal();
+        }
+    }
+
+    // FROM: http://forum.unity3d.com/threads/giving-unitygui-elements-a-background-color.20510/
+    private Texture2D MakeSolidColorTexture(int width, int height, Color color)
+    {
+        Color[] pix = new Color[width * height];
+
+        for (int i = 0; i < pix.Length; i++)
+            pix[i] = color;
+
+        Texture2D result = new Texture2D(width, height);
+        result.SetPixels(pix);
+        result.Apply();
+
+        return result;
+    }
+
+    private void OnGUI_ChatWindow()
+    {
         //Debug.Log("EditorWindow.OnGUI called: " + GetTimeAbsolute());
 
         if (_headIcon == null)
@@ -77,7 +138,9 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
             _goalIcon = Resources.Load<Texture>("goal");
             _notificationIcon = Resources.Load<Texture>("alert");
 
-            _codeStyle = new GUIStyle();
+            _codeStyle = new GUIStyle(GUI.skin.box);
+            _codeStyle.normal.textColor = Color.blue;
+            _codeStyle.normal.background = MakeSolidColorTexture(128, 128, Color.white);
         }
 
         if (_lines == null) { _lines = new List<ChatLine>(); }
@@ -184,48 +247,49 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
         }
 
         GUILayout.EndScrollView();
-
-        // Show control buttons
-        if (_viewModel.IsNextEnabled)
-        {
-            if (GUILayout.Button("Next"))
-            {
-                _viewModel.OnNext();
-            }
-        }
-
-        if (_viewModel.IsResetCodeEnabled)
-        {
-            if (GUILayout.Button("Reset Code"))
-            {
-                _viewModel.OnResetCode();
-            }
-        }
     }
 
     private List<ChatLineGroup> GroupLines(List<ChatLine> lines)
     {
-        var groups = lines.GroupBy(l => l.Type).Select(g => new ChatLineGroup() { Lines = g.ToList() }).ToList();
+        if (lines.Count == 0) { return new List<ChatLineGroup>(); }
 
-        // Add pause and blanks back into groups
-        for (int i = 0; i < groups.Count; i++)
+        var groups = new List<ChatLineGroup>();
+        groups.Add(new ChatLineGroup());
+
+        var group = groups[0];
+
+        foreach (var line in lines)
         {
-            if (i == 0) { continue; }
+            if (group.Lines.Count == 0)
+            {
+                group.Lines.Add(line);
+                continue;
+            }
 
-            var g = groups[i];
-            var t = g.Lines.First().Type;
-            var lastT = groups[i - 1].Lines.First().Type;
+            var t = line.Type;
+            var lastT = group.Lines.First().Type;
 
             if (t == ChatLineType.BlankLine
                 || t == ChatLineType.Pause
+                || t == ChatLineType.Divider
                 || t == lastT
+                || (t == ChatLineType.GoalCodeLine && lastT == ChatLineType.GoalCommentLine)
+                || (t == ChatLineType.GoalCommentLine && lastT == ChatLineType.GoalCodeLine)
+                || (t == ChatLineType.NotificationCodeLine && lastT == ChatLineType.NotificationCommentLine)
+                || (t == ChatLineType.NotificationCommentLine && lastT == ChatLineType.NotificationCodeLine)
                 )
             {
-                groups[i - 1].Lines.AddRange(g.Lines);
-                groups.RemoveAt(i);
+                group.Lines.Add(line);
+            }
+            else
+            {
+                group = new ChatLineGroup();
+                group.Lines.Add(line);
+                groups.Add(group);
             }
         }
 
+        // Set icons
         foreach (var g in groups)
         {
             var t = g.Lines.First().Type;
@@ -383,6 +447,11 @@ public class ChatLine
         Type = type;
         Text = text;
     }
+
+    public override string ToString()
+    {
+        return string.Format("{0}:{1}", Type, Text);
+    }
 }
 
 public enum ChatLineType
@@ -405,4 +474,9 @@ public class ChatLineGroup
 {
     public List<ChatLine> Lines { get; set; }
     public Texture Icon { get; set; }
+
+    public ChatLineGroup()
+    {
+        Lines = new List<ChatLine>();
+    }
 }
