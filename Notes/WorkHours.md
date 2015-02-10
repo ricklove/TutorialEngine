@@ -58,6 +58,8 @@
 
 - Parse File 
 
+## Hour 9
+
 ### 14:50-15:13
 
 - Fix GOAL parsing
@@ -74,9 +76,19 @@
 
 - Finish parsing
 
+## Hour 10
+
+### 4:15-4:45
+
+- Design Tutorial Engine Architecture
+
+### 4:46-
+
+
 # Tasks
 
-
+- Move the Syntax Tree Classes to their own namespace
+- 
 
 ## Implement Parser
 
@@ -84,3 +96,45 @@
 
 ## Implement Unity Runner
 
+- Create the tutorial engine components
+	- Tutorial Engine
+	- Code Editor Presenter
+	- Instruction Presenter
+	- [Advanced] Game Preview Presenter
+	- File System Presenter
+
+- Supported Scenarios:
+	- Unity: Show the instructions in a unity editor window and modify the project files on the desktop  file system.
+	- Unity + Remote View: Show the instructions on a device or in browser (still visible in the unity editor window) and modify the project files within unity. Use the LAN to sync the view with unity.
+	- Browser: Create a SPA (Single Page App) that will show a simulated code editor and the instructions
+	- (Advanced) App (or Browser Plugin): Run the actual game with an in game tutorial where the code simulates modifying the game. (All possible user edits would need to be pre-compiled into the game, and the app would simulate the user code actually affecting the game. - Because iTunes Store does not allow real scripting.)
+	- [Sync everything at the same time]: Live sync all these up with the dgi server and the user can open up as many presenters as they want and they will all be synced.
+
+- TutorialEngine
+	- This will run the tutorial and send instructions to the presenters.
+
+- ILessonCodeEditorPresenter
+
+	- Display the code editor. 
+	- In a simulated environment, this would show a custom code editor.
+	- In a host environment (like Unity), this would open the external editor from the file system.
+	- http://docs.unity3d.com/ScriptReference/AssetDatabase.OpenAsset.html
+
+
+- ILessonInstructionPresenter
+
+	- Display the instructions to the user
+	- This may or may not be in the same environment as the file presenter.
+	
+
+- IGamePreviewPresenter
+	
+	- Display the game preview of what the game would be like based on the current state of the code.
+	- In Unity, this will cause the game preview to run.
+	- In a simulated environment, this depend on a pre-compiled game and will set the game to that state.
+	- This limits the game state to only those which are expected by the lesson. (If the user puts in unexpected code, it won't preview.)
+
+- IFileSystemPresenter
+
+	- In Unity this will modify the project files.
+	- This would not be needed for a simulated environment.
