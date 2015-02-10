@@ -69,7 +69,7 @@ namespace TutorialEngine
 
     public interface IGamePreviewPresenter : ITutorialPresenter
     {
-        void SetGameState(string gameStateName);
+        void ShowGameState(string gameStateName);
     }
 
     public class Project
