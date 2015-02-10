@@ -114,14 +114,24 @@
 
 ## Hour 14
 
-### 11:25-
+### 11:25-12:42
+
+- Implement a scrolling view of comments
+
+## Hour 15-16
+
+### 13:30-15:30
+
+- Add a chat head to the comments
+- Display groups
+
+## Hour 17
 
 
 
 # Tasks
 
-- Implement a scrolling view of comments
-	- Like a chat window
+
 
 ## Tutorial Engine Design
 

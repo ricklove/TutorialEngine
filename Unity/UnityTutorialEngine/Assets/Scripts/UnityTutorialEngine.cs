@@ -40,8 +40,18 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
         _engine = new UnityTutorialEngine(_viewModel);
     }
 
+    private Texture _headIcon;
+    private Texture _codeIcon;
+    private Texture _goalIcon;
+    private Texture _notificationIcon;
+
+    private GUIStyle _codeStyle;
+
     private Vector2 _scrollPosition;
+    private Vector2 _lastMaxScrollPosition;
+
     public List<ChatLine> _lines { get; private set; }
+    public List<ChatLineGroup> _groupedLines { get; private set; }
     private float chatDelay = 3.0f;
     private float pauseTime = 0.0f;
     private double timeAtLastLine = 0f;
@@ -60,7 +70,18 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
     {
         //Debug.Log("EditorWindow.OnGUI called: " + GetTimeAbsolute());
 
+        if (_headIcon == null)
+        {
+            _headIcon = Resources.Load<Texture>("dgi-monkey");
+            _codeIcon = Resources.Load<Texture>("code");
+            _goalIcon = Resources.Load<Texture>("goal");
+            _notificationIcon = Resources.Load<Texture>("alert");
+
+            _codeStyle = new GUIStyle();
+        }
+
         if (_lines == null) { _lines = new List<ChatLine>(); }
+        if (_groupedLines == null) { _groupedLines = new List<ChatLineGroup>(); }
 
         // If it is time to update the chat
         if (GetTimeAbsolute() > timeAtLastLine + chatDelay + pauseTime)
@@ -89,30 +110,80 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
 
                     if (_lines.Last().Type == ChatLineType.Pause)
                     {
-                        pauseTime = chatDelay * 2;
+                        pauseTime = chatDelay;
                     }
+
+                    if (_lastMaxScrollPosition.y - _scrollPosition.y < 0.1f)
+                    {
+                        _scrollPosition.y = float.MaxValue;
+                    }
+
+                    // Regroup lines
+                    _groupedLines = GroupLines(_lines);
                 }
             }
         }
 
 
         // Scrolling Comments (with history)
+        var isAtMax = false;
+        if (_scrollPosition.y > float.MaxValue / 2) { isAtMax = true; }
+
         _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
+        if (isAtMax) { _lastMaxScrollPosition = _scrollPosition; }
+
         // Add lines
-        foreach (var l in _lines)
+        var isFirst = true;
+
+        foreach (var g in _groupedLines)
         {
-            if (l.Type == ChatLineType.Pause) { continue; }
-            
-            if (l.Type == ChatLineType.Divider) {
-                GUILayout.Label("----------------");
+            // New section
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(g.Icon, GUILayout.Width(48), GUILayout.Height(48));
+            GUILayout.BeginVertical();
+
+            isFirst = false;
+
+            foreach (var l in g.Lines)
+            {
+                if (l.Type == ChatLineType.Pause)
+                {
+                    continue;
+                }
+                if (l.Type == ChatLineType.Divider)
+                {
+                    continue;
+                }
+
+                if (l.Type == ChatLineType.BlankLine)
+                {
+                    GUILayout.Label("");
+                    continue;
+                }
+
+                if (l.Type == ChatLineType.InstructionCommentLine
+                    || l.Type == ChatLineType.GoalCommentLine
+                    || l.Type == ChatLineType.NotificationCommentLine)
+                {
+                    GUILayout.Label(l.Text);
+                }
+
+                if (l.Type == ChatLineType.InstructionCodeLine
+                    || l.Type == ChatLineType.GoalCodeLine
+                    || l.Type == ChatLineType.NotificationCodeLine)
+                {
+                    GUILayout.Label(l.Text, _codeStyle);
+                }
+
             }
 
-            GUILayout.Label(l.Text);
+            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
         }
 
         GUILayout.EndScrollView();
-
 
         // Show control buttons
         if (_viewModel.IsNextEnabled)
@@ -130,6 +201,56 @@ public class UnityTutorialEngineEditorWindow : EditorWindow
                 _viewModel.OnResetCode();
             }
         }
+    }
+
+    private List<ChatLineGroup> GroupLines(List<ChatLine> lines)
+    {
+        var groups = lines.GroupBy(l => l.Type).Select(g => new ChatLineGroup() { Lines = g.ToList() }).ToList();
+
+        // Add pause and blanks back into groups
+        for (int i = 0; i < groups.Count; i++)
+        {
+            if (i == 0) { continue; }
+
+            var g = groups[i];
+            var t = g.Lines.First().Type;
+            var lastT = groups[i - 1].Lines.First().Type;
+
+            if (t == ChatLineType.BlankLine
+                || t == ChatLineType.Pause
+                || t == lastT
+                )
+            {
+                groups[i - 1].Lines.AddRange(g.Lines);
+                groups.RemoveAt(i);
+            }
+        }
+
+        foreach (var g in groups)
+        {
+            var t = g.Lines.First().Type;
+
+            if (t == ChatLineType.InstructionCommentLine)
+            {
+                g.Icon = _headIcon;
+            }
+            else if (t == ChatLineType.InstructionCodeLine)
+            {
+                g.Icon = _codeIcon;
+            }
+            else if (t == ChatLineType.GoalCommentLine
+                || t == ChatLineType.GoalCodeLine)
+            {
+                g.Icon = _goalIcon;
+            }
+            else if (t == ChatLineType.NotificationCommentLine
+                || t == ChatLineType.NotificationCodeLine)
+            {
+                g.Icon = _notificationIcon;
+            }
+        }
+
+        return groups;
     }
 }
 
@@ -176,7 +297,7 @@ public class UnityInstructionPresenterViewModel : IInstructionPresenter
                 Lines.AddRange(item.Text.GetLines()
                     .Select(l => new ChatLine(commentType, l)));
             }
-            else if( item.Kind == ParagraphItemKind.Code)
+            else if (item.Kind == ParagraphItemKind.Code)
             {
                 Lines.AddRange(item.Code.GetLines()
                     .Select(l => new ChatLine(codeType, l)));
@@ -278,4 +399,10 @@ public enum ChatLineType
 
     NotificationCommentLine,
     NotificationCodeLine
+}
+
+public class ChatLineGroup
+{
+    public List<ChatLine> Lines { get; set; }
+    public Texture Icon { get; set; }
 }
