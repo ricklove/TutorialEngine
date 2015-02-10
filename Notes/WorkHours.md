@@ -87,9 +87,13 @@
 - Move the Syntax Tree Classes to their own namespace
 - Create Lesson Interfaces
 
+### 6:30-7:00
+
+- Complete lesson tree class properties
+
+
 # Tasks
 
-- Move the Syntax Tree Classes to their own namespace
 - Define the tutorial engine interfaces
 - Create the tutorial engine
 

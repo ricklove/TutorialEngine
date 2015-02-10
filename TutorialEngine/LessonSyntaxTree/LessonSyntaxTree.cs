@@ -355,11 +355,19 @@ namespace TutorialEngine.LessonSyntaxTree
     {
         public LessonFile(StringWithIndex content) : base(content) { }
 
-        public List<LessonParagraph> Paragraphs
+        public LessonFileMethodReference FileMethodReference
         {
             get
             {
-                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
+                return Children.Where(c => c is LessonFileMethodReference).Cast<LessonFileMethodReference>().FirstOrDefault();
+            }
+        }
+
+        public LessonCode Code
+        {
+            get
+            {
+                return Children.Where(c => c is LessonCode).Cast<LessonCode>().FirstOrDefault();
             }
         }
     }
@@ -368,11 +376,11 @@ namespace TutorialEngine.LessonSyntaxTree
     {
         public LessonTest(StringWithIndex content) : base(content) { }
 
-        public List<LessonParagraph> Paragraphs
+        public LessonCode Code
         {
             get
             {
-                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
+                return Children.Where(c => c is LessonCode).Cast<LessonCode>().FirstOrDefault();
             }
         }
     }
@@ -419,11 +427,11 @@ namespace TutorialEngine.LessonSyntaxTree
     {
         public LessonExplanation(StringWithIndex content) : base(content) { }
 
-        public List<LessonParagraph> Paragraphs
+        public List<LessonCodeExplanation> CodeExplanations
         {
             get
             {
-                return Children.Where(c => c is LessonParagraph).Cast<LessonParagraph>().ToList();
+                return Children.Where(c => c is LessonCodeExplanation).Cast<LessonCodeExplanation>().ToList();
             }
         }
     }

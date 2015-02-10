@@ -11,19 +11,19 @@ namespace TutorialEngine.Tests
     [TestClass]
     public class LessonParser_SampleLesson_Tests
     {
-        [TestMethod]
-        public void CanParse()
-        {
-            var result = ParseSampleLesson();
-            var resultStr = result.ToString();
-        }
-
         private static Lesson ParseSampleLesson()
         {
             var lesson = Lessons.LessonLoader.LoadSampleLesson();
             var parser = new LessonParser();
             var result = parser.ParseLesson(lesson);
             return result;
+        }
+
+        [TestMethod]
+        public void CanParse()
+        {
+            var result = ParseSampleLesson();
+            var resultStr = result.ToString();
         }
 
         [TestMethod]
@@ -183,7 +183,7 @@ namespace TutorialEngine.Tests
         }
 
         [TestMethod]
-        public void FileParagraphsHaveOnlyCode()
+        public void FileHasCode()
         {
             var result = ParseSampleLesson();
 
@@ -193,9 +193,88 @@ namespace TutorialEngine.Tests
 
                 if (file == null) { continue; }
 
-                foreach (var paragraph in file.Paragraphs)
+                Assert.IsTrue(file.Code != null);
+            }
+        }
+
+        [TestMethod]
+        public void FileHasFileMethodReference()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                var file = step.File;
+
+                if (file == null) { continue; }
+
+                Assert.IsTrue(file.FileMethodReference != null);
+            }
+        }
+
+        [TestMethod]
+        public void TestHasCode()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                var test = step.Test;
+
+                if (test == null) { continue; }
+
+                Assert.IsTrue(test.Code != null);
+            }
+        }
+
+        [TestMethod]
+        public void ExplanationHasCodeExplanations()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                var explanation = step.Explanation;
+
+                if (explanation == null) { continue; }
+
+                Assert.IsTrue(explanation.CodeExplanations.Count > 0);
+            }
+        }
+
+        [TestMethod]
+        public void CodeExplanationsHaveCodeQuote()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                var explanation = step.Explanation;
+
+                if (explanation == null) { continue; }
+
+                foreach (var codeExplanation in explanation.CodeExplanations)
                 {
-                    Assert.IsTrue(paragraph.Code != null);
+                    Assert.IsTrue(codeExplanation.CodeQuote != null);
+                }
+            }
+        }
+
+
+        [TestMethod]
+        public void CodeExplanationsHavePhrases()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                var explanation = step.Explanation;
+
+                if (explanation == null) { continue; }
+
+                foreach (var codeExplanation in explanation.CodeExplanations)
+                {
+                    Assert.IsTrue(codeExplanation.Phrases.Count > 0);
                 }
             }
         }
@@ -210,6 +289,34 @@ namespace TutorialEngine.Tests
             {
                 Assert.IsNotNull(step.Summary);
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(step.Summary.Content.Text));
+            }
+        }
+
+        [TestMethod]
+        public void ExplanationSectionMustHaveATestSection()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                if (step.Explanation != null && step.Test == null)
+                {
+                    Assert.Fail("An EXPLANATION section needs a TEST section");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ExplanationHasExplanationParts()
+        {
+            var result = ParseSampleLesson();
+
+            foreach (var step in result.Document.Steps)
+            {
+                if (step.Explanation != null)
+                {
+                    // test the explanation parts
+                }
             }
         }
 
@@ -387,33 +494,7 @@ namespace TutorialEngine.Tests
             Assert.AreEqual(lesson, resultStr);
         }
 
-        [TestMethod]
-        public void ExplanationSectionMustHaveATestSection()
-        {
-            var result = ParseSampleLesson();
 
-            foreach (var step in result.Document.Steps)
-            {
-                if (step.Explanation != null && step.Test == null)
-                {
-                    Assert.Fail("An EXPLANATION section needs a TEST section");
-                }
-            }
-        }
-
-        [TestMethod]
-        public void ExplanationHasExplanationParts()
-        {
-            var result = ParseSampleLesson();
-
-            foreach (var step in result.Document.Steps)
-            {
-                if (step.Explanation != null)
-                {
-                   // test the explanation parts
-                }
-            }
-        }
 
         #endregion
     }

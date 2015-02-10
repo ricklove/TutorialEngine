@@ -229,12 +229,8 @@ namespace TutorialEngine
             var titlePart = parts[0];
             test.Children.Add(new LessonBlankTitlePlaceholder(titlePart, "## TEST", "\r\n"));
 
-            var paragraphs = GetParagraphs(parts[1]);
-
-            // Remove blank paragraphs
-            paragraphs = paragraphs.Where(p => p.Code != null);
-
-            test.Children.AddRange(paragraphs);
+            var codePart = parts[1];
+            test.Children.Add(new LessonCode(codePart));
 
             return test;
         }
@@ -294,13 +290,8 @@ namespace TutorialEngine
             var titlePart = parts[0];
             file.Children.Add(new LessonFileMethodReference(titlePart));
 
-            // Parse the paragraphs
-            var paragraphs = GetParagraphs(parts[1]);
-
-            // Remove blank paragraphs
-            paragraphs = paragraphs.Where(p => p.Code != null);
-
-            file.Children.AddRange(paragraphs);
+            var codePart = parts[1];
+            file.Children.Add(new LessonCode(codePart));
 
             return file;
         }

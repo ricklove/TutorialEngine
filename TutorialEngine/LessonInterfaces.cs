@@ -68,17 +68,34 @@ namespace TutorialEngine
 
     public interface ILessonTest
     {
-        IList<ILessonParagraph> Paragraphs { get; }
+        ILessonCode Code { get; }
     }
 
     public interface ILessonExplanation
     {
-        IList<ILessonParagraph> Paragraphs { get; }
+        IList<ILessonCodeExplanation> CodeExplanations { get; }
+    }
+
+    public interface ILessonCodeExplanation
+    {
+        ILessonCodeExplanationQuote CodeQuote { get; }
+        IList<ILessonPhrase> Phrases { get; }
+    }
+
+    public interface ILessonCodeExplanationQuote
+    {
+        string Text { get; }
     }
 
     public interface ILessonFile
     {
-        IList<ILessonParagraph> Paragraphs { get; }
+        ILessonFileMethodReference FileMethodReference { get; }
+        ILessonCode Code { get; }
+    }
+
+    public interface ILessonFileMethodReference
+    {
+        string Text { get; }
     }
 
 }
@@ -151,17 +168,34 @@ namespace TutorialEngine.LessonSyntaxTree
 
     public partial class LessonTest : ILessonTest
     {
-        IList<ILessonParagraph> ILessonTest.Paragraphs { get { return Paragraphs.Cast<ILessonParagraph>().ToList(); } }
+        ILessonCode ILessonTest.Code { get { return Code; } }
     }
 
     public partial class LessonExplanation : ILessonExplanation
     {
-        IList<ILessonParagraph> ILessonExplanation.Paragraphs { get { return Paragraphs.Cast<ILessonParagraph>().ToList(); } }
+        IList<ILessonCodeExplanation> ILessonExplanation.CodeExplanations { get { return CodeExplanations.Cast<ILessonCodeExplanation>().ToList(); } }
+    }
+
+    public partial class LessonCodeExplanation : ILessonCodeExplanation
+    {
+        ILessonCodeExplanationQuote ILessonCodeExplanation.CodeQuote { get { return CodeQuote; } }
+        IList<ILessonPhrase> ILessonCodeExplanation.Phrases { get { return Phrases.Cast<ILessonPhrase>().ToList(); } }
+    }
+
+    public partial class LessonCodeExplanationQuote : ILessonCodeExplanationQuote
+    {
+        string ILessonCodeExplanationQuote.Text { get { return Content.Text; } }
     }
 
     public partial class LessonFile : ILessonFile
     {
-        IList<ILessonParagraph> ILessonFile.Paragraphs { get { return Paragraphs.Cast<ILessonParagraph>().ToList(); } }
+        ILessonFileMethodReference ILessonFile.FileMethodReference { get { return FileMethodReference; } }
+        ILessonCode ILessonFile.Code { get { return Code; } }
+    }
+
+    public partial class LessonFileMethodReference : ILessonFileMethodReference
+    {
+        string ILessonFileMethodReference.Text { get { return Content.Text; } }
     }
 
 }
