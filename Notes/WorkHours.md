@@ -125,7 +125,7 @@
 - Add a chat head to the comments
 - Display groups
 
-## Hour 17
+## Hour 17-18
 
 ### 15:42-16:36
 
