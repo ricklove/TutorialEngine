@@ -287,12 +287,24 @@ namespace Told.TutorialEngine.Lesson.Parsing
 
             // Parse the title
             var titlePart = parts[0];
-            file.Children.Add(new LessonFileMethodReference(titlePart));
+            file.Children.Add(ParseFileMethodReference(titlePart));
 
             var codePart = parts[1];
             file.Children.Add(new LessonCode(codePart));
 
             return file;
+        }
+
+        private LessonFileMethodReference ParseFileMethodReference(StringWithIndex text)
+        {
+            var n = new LessonFileMethodReference(text);
+
+            var parts = n.Content.Split(">");
+
+            n.Children.Add(new LessonFileName(parts[0].Trim()));
+            n.Children.Add(new LessonMethodName(parts[1].Trim()));
+
+            return n;
         }
 
         private IEnumerable<LessonParagraph> GetParagraphs(StringWithIndex text)
@@ -312,9 +324,9 @@ namespace Told.TutorialEngine.Lesson.Parsing
             var lines = text.SplitLines();
 
             // Remove comments and blank lines
-            lines = lines.Where(l => 
-                !l.Text.StartsWith("//") 
-                && !l.Text.StartsWith("---") 
+            lines = lines.Where(l =>
+                !l.Text.StartsWith("//")
+                && !l.Text.StartsWith("---")
                 && !StringHelper.IsNullOrWhiteSpace(l.Text)
                 ).ToList();
 

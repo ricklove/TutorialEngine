@@ -9,7 +9,7 @@ namespace Told.TutorialEngine
     public interface ITutorialController
     {
         void AddPresenter(ITutorialPresenter presenter);
-        void LoadLesson(ILesson lesson);
+        void LoadLesson(ILessonTree lesson);
     }
 
     public interface ITutorialPresenter { }

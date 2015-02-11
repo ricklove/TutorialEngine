@@ -239,9 +239,35 @@ namespace Told.TutorialEngine.Lesson.Parsing.LessonSyntaxTree
         public LessonBlankTitlePlaceholder(StringWithIndex content, string startMarker, string endMarker) : base(content, startMarker, endMarker) { }
     }
 
-    public partial class LessonFileMethodReference : LessonSpan
+    public partial class LessonFileMethodReference : LessonBlockBase
     {
-        public LessonFileMethodReference(StringWithIndex content) : base(content, "## FILE = ", "\r\n") { }
+        public LessonFileMethodReference(StringWithIndex content) : base(content) { }
+
+        public LessonFileName FileName
+        {
+            get
+            {
+                return Children.Where(c => c is LessonFileName).Cast<LessonFileName>().FirstOrDefault();
+            }
+        }
+
+        public LessonMethodName MethodName
+        {
+            get
+            {
+                return Children.Where(c => c is LessonMethodName).Cast<LessonMethodName>().FirstOrDefault();
+            }
+        }
+    }
+
+    public partial class LessonFileName : LessonSpan
+    {
+        public LessonFileName(StringWithIndex content) : base(content, "## FILE = ", " ") { }
+    }
+
+    public partial class LessonMethodName : LessonSpan
+    {
+        public LessonMethodName(StringWithIndex content) : base(content, "> ", "") { }
     }
 
     public partial class LessonStep : LessonBlockBase
@@ -355,26 +381,6 @@ namespace Told.TutorialEngine.Lesson.Parsing.LessonSyntaxTree
             get
             {
                 return Children.Where(c => c is LessonFileMethodReference).Cast<LessonFileMethodReference>().FirstOrDefault();
-            }
-        }
-
-        public string Path
-        {
-            get
-            {
-                // TODO: Parse this correctly
-                var t = FileMethodReference.Content.Text;
-                var i = t.IndexOf(">");
-                return t.Substring(0, i).Trim();
-            }
-        }
-        public string Context
-        {
-            get
-            {
-                var t = FileMethodReference.Content.Text;
-                var i = t.IndexOf(">");
-                return t.Substring(i + 1).Trim();
             }
         }
 

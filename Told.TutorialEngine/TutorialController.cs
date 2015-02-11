@@ -8,7 +8,7 @@ namespace Told.TutorialEngine
 {
     public class TutorialController : ITutorialController
     {
-        private ILesson _lesson;
+        private ILessonTree _lesson;
         private int? _stepIndex;
 
         private ILessonStep _step;
@@ -61,7 +61,7 @@ namespace Told.TutorialEngine
             GotoNextState();
         }
 
-        public void LoadLesson(ILesson lesson)
+        public void LoadLesson(ILessonTree lesson)
         {
             _lesson = lesson;
             LoadNextStep();
@@ -88,8 +88,8 @@ namespace Told.TutorialEngine
 
         public class FileState
         {
-            public string Path { get; set; }
-            public string Context { get; set; }
+            public string FileName { get; set; }
+            public string MethodName { get; set; }
             public string Content { get; set; }
         }
 
@@ -107,14 +107,15 @@ namespace Told.TutorialEngine
                     // Use FILE
                     if (s.File != null)
                     {
-                        fileStates.Add(new FileState() { Path = s.File.Path, Context = s.File.Context, Content = s.File.Code.Text });
+                        var fRef = s.File.FileMethodReference;
+                        fileStates.Add(new FileState() { FileName = fRef.FileName.Text, MethodName = fRef.MethodName.Text, Content = s.File.Code.Text });
                     }
 
                     // Use TEST
                     if (s.Test != null)
                     {
                         var lastFileState = fileStates.Last();
-                        fileStates.Add(new FileState() { Path = lastFileState.Path, Context = lastFileState.Context, Content = s.Test.Code.Text });
+                        fileStates.Add(new FileState() { FileName = lastFileState.FileName, MethodName = lastFileState.MethodName, Content = s.Test.Code.Text });
                     }
 
                 }
@@ -123,7 +124,8 @@ namespace Told.TutorialEngine
                     // Use FILE 
                     if (s.File != null)
                     {
-                        fileStates.Add(new FileState() { Path = s.File.Path, Context = s.File.Context, Content = s.File.Code.Text });
+                        var fRef = s.File.FileMethodReference;
+                        fileStates.Add(new FileState() { FileName = fRef.FileName.Text, MethodName = fRef.MethodName.Text, Content = s.File.Code.Text });
                     }
                 }
             }
@@ -135,9 +137,9 @@ namespace Told.TutorialEngine
 
                 foreach (var state in fileStates)
                 {
-                    var fileText = f.GetFile(state.Path);
+                    var fileText = f.GetFile(state.FileName);
                     var fileContent = SetContentsAtContext(fileText, state);
-                    f.SetFile(state.Path, fileContent);
+                    f.SetFile(state.FileName, fileContent);
                 }
             }
         }

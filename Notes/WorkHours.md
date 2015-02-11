@@ -141,12 +141,16 @@
 
 ### 3:44-4:36
 
-- Separated Everything into appropriate projects
+- Separate Everything into appropriate projects
+
+### 4:37-5:11
+
+- Fix File Reference
+
 
 # Tasks
 
 - REFACTOR!
-	- Move parser into separate project
 	- Parse the FILE reference correctly
 	- Refactor TutorialEngine
 	- Refactor UnityTutorialEngine

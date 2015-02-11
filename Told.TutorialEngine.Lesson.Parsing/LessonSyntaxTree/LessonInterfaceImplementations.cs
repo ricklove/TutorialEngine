@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using Told.TutorialEngine.Lesson;
 
+
+
 namespace Told.TutorialEngine.Lesson.Parsing.LessonSyntaxTree
 {
-    public partial class LessonTree : ILesson
+    public partial class LessonTree : ILessonTree
     {
-        ILessonDocument ILesson.Document { get { return Document; } }
+        ILessonDocument ILessonTree.Document { get { return Document; } }
     }
 
     public partial class LessonDocument : ILessonDocument
@@ -98,7 +100,18 @@ namespace Told.TutorialEngine.Lesson.Parsing.LessonSyntaxTree
 
     public partial class LessonFileMethodReference : ILessonFileMethodReference
     {
-        string ILessonFileMethodReference.Text { get { return Content.Text; } }
+        ILessonFileName ILessonFileMethodReference.FileName { get { return FileName; } }
+        ILessonMethodName ILessonFileMethodReference.MethodName { get { return MethodName; } }
+    }
+
+    public partial class LessonFileName : ILessonFileName
+    {
+        string ILessonFileName.Text { get { return Content.Text; } }
+    }
+
+    public partial class LessonMethodName : ILessonMethodName
+    {
+        string ILessonMethodName.Text { get { return Content.Text; } }
     }
 
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-//namespace TutorialEngine
+//namespace Told.TutorialEngine.Lesson
 //{
 //    public interface ILesson
 //    {
@@ -11,7 +11,7 @@ using System.Text;
 //    }
 //}
 //
-//namespace TutorialEngine.LessonSyntaxTree
+//namespace Told.TutorialEngine.Lesson.Parsing.LessonSyntaxTree
 //{
 //    public partial class Lesson : ILesson
 //    {
@@ -19,8 +19,14 @@ using System.Text;
 //    }
 //}
 
+namespace Told.TutorialEngine.Lesson
+{
+    internal class Placeholder { }
+}
+
 namespace Told.TutorialEngine.Lesson.Parsing.LessonSyntaxTree
 {
+    // RUN: Told.TutorialEngine.Lesson.Parsing.LessonSyntaxTree.LessonInterfacesCodeGenerator.GenerateInterfaces()
     public static class LessonInterfacesCodeGenerator
     {
         public static string[] IgnoreList = new string[] { "StringWithIndex" };
@@ -34,14 +40,11 @@ namespace Told.TutorialEngine.Lesson.Parsing.LessonSyntaxTree
 
             AddInterfaceForSelfAndChildrenProperties(interfaceCodeParts, implementationCodeParts, new HashSet<Type>(), rootType);
 
-            // TODO: Create the partial classes that provide the explicit implementations of each interface
-            // TODO: Mark the classes as partial
-
             var interfaceCode = interfaceCodeParts.Aggregate(new StringBuilder(), (sb, s) => sb.Append(s)).ToString();
             var implementationCode = implementationCodeParts.Aggregate(new StringBuilder(), (sb, s) => sb.Append(s)).ToString();
 
             // Wrap 
-            var interfaceNamespace = typeof(LessonInterfacesCodeGenerator).Namespace;
+            var interfaceNamespace = typeof(Told.TutorialEngine.Lesson.Placeholder).Namespace;
             var implementationNamespace = typeof(LessonTree).Namespace;
             interfaceCode = "using System.Collections.Generic;\r\nusing System.Linq;\r\n\r\nnamespace " + interfaceNamespace + "\r\n{\r\n" + interfaceCode + "}\r\n";
             implementationCode = "\r\n\r\nnamespace " + implementationNamespace + "\r\n{\r\n" + implementationCode + "}\r\n";

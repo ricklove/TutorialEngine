@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Told.TutorialEngine.Lesson
 {
-    public interface ILesson
+    public interface ILessonTree
     {
         ILessonDocument Document { get; }
     }
@@ -91,15 +91,22 @@ namespace Told.TutorialEngine.Lesson
     {
         ILessonFileMethodReference FileMethodReference { get; }
         ILessonCode Code { get; }
-
-        string Path { get; }
-        string Context { get; }
     }
 
     public interface ILessonFileMethodReference
+    {
+        ILessonFileName FileName { get; }
+        ILessonMethodName MethodName { get; }
+    }
+
+    public interface ILessonFileName
+    {
+        string Text { get; }
+    }
+
+    public interface ILessonMethodName
     {
         string Text { get; }
     }
 
 }
-
