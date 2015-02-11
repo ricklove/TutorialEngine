@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Told.TutorialEngine.Lesson.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Told.TutorialEngine.Lesson.Parsing.Tests", "Told.TutorialEngine.Lesson.Parsing.Tests\Told.TutorialEngine.Lesson.Parsing.Tests.csproj", "{1DD7BEBE-5041-4C84-95B9-54C83146C568}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Told.UnityBuildTool", "Told.UnityBuildTool\Told.UnityBuildTool.csproj", "{CBB47574-0EAA-492F-8744-443954300A66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1DD7BEBE-5041-4C84-95B9-54C83146C568}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DD7BEBE-5041-4C84-95B9-54C83146C568}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DD7BEBE-5041-4C84-95B9-54C83146C568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBB47574-0EAA-492F-8744-443954300A66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBB47574-0EAA-492F-8744-443954300A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBB47574-0EAA-492F-8744-443954300A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBB47574-0EAA-492F-8744-443954300A66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

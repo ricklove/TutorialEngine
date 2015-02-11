@@ -145,13 +145,12 @@
 
 ### 4:37-5:11
 
-- Fix File Reference
+- Fix File Method Reference
 
 
 # Tasks
 
 - REFACTOR!
-	- Parse the FILE reference correctly
 	- Refactor TutorialEngine
 	- Refactor UnityTutorialEngine
 - Persist editor state: EditorPrefs
