@@ -54,12 +54,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LessonParser_SampleLesson_Interface_Tests.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TutorialEngine\TutorialEngine.csproj">
-      <Project>{89d5b6f3-995b-4294-90df-81e20a1a9602}</Project>
-      <Name>TutorialEngine</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

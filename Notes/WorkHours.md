@@ -137,11 +137,20 @@
 - Handle filesystem
 - Create new scene
 
+## Hour 19
+
+### 3:44-4:36
+
+- Separated Everything into appropriate projects
+
 # Tasks
 
-- Parse the FILE reference correctly
+- REFACTOR!
+	- Move parser into separate project
+	- Parse the FILE reference correctly
+	- Refactor TutorialEngine
+	- Refactor UnityTutorialEngine
 - Persist editor state: EditorPrefs
-
 
 ## Tutorial Engine Design
 
